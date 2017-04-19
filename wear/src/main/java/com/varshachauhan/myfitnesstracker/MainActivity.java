@@ -48,6 +48,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
+    //Alex's test comment
 
     private BoxInsetLayout mContainerView;
     private TextView mStepsView;
