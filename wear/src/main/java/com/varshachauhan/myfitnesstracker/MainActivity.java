@@ -235,7 +235,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     private void AddSensorDataToDataLayer()
     {
-
         Float fHBPM = Float.parseFloat(sHeartRate);
         Float fSteps = Float.parseFloat(sStepCount);
 
