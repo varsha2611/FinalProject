@@ -1,0 +1,203 @@
+package com.varshachauhan.myfitnesstracker;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
+import android.text.format.DateFormat;
+import android.util.Log;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by Varsha on 4/1/2017.
+ */
+
+public class DatabaseHandler {
+    //Constructor
+    public DatabaseHandler() {
+    }
+
+    /* Inner class that defines the table contents */
+    public static abstract class FeedEntry implements BaseColumns {
+        public static final String TABLE_NAME_WATCH_DATABASE = "WATCH_DATABASE";
+        public static final String COLUMN_NAME_HBPM= "HBPM";
+        public static final String COLUMN_NAME_STEPS= "STEPS";
+        public static final String COLUMN_NAME_CALORIES= "CALORIES";
+        public static final String COLUMN_NAME_SLEEP= "SLEEP";
+        public static final String COLUMN_NAME_TIMESTAMP= "TIMESTAMP";
+
+
+
+        public static final String SQL_CREATE_WATCH_DATABASE_TABLE =
+                "CREATE TABLE " + FeedEntry.TABLE_NAME_WATCH_DATABASE+ " (" +
+                        FeedEntry.COLUMN_NAME_HBPM + " INTEGER," +
+                        FeedEntry.COLUMN_NAME_STEPS+ " INTEGER," +
+                        FeedEntry.COLUMN_NAME_CALORIES + " INTEGER,"+
+                        FeedEntry.COLUMN_NAME_SLEEP+ " INTEGER," +
+                        FeedEntry.COLUMN_NAME_TIMESTAMP+ " TIMESTAMP" +
+                        ")";
+
+        private static final String SQL_DELETE_ENTRIES_WATCH_DATABASE =
+                "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME_WATCH_DATABASE;
+
+         /**
+         * FeedReaderHelper Class to create Database
+         */
+        public static class FeedReaderDbHelper extends SQLiteOpenHelper {
+
+            // If you change the database schema, you must increment the database version.
+            public static final int DATABASE_VERSION = 2;
+            public static final String DATABASE_NAME = "WatchDatabase.db";
+
+            public FeedReaderDbHelper(Context context) {
+                super(context, DATABASE_NAME, null, DATABASE_VERSION);
+                this.getWritableDatabase();
+            }
+
+            public void onCreate(SQLiteDatabase db) {
+                db.execSQL(SQL_CREATE_WATCH_DATABASE_TABLE);
+            }
+
+            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                // This database is only a cache for online data, so its upgrade policy is
+                // to simply to discard the data and start over
+                db.execSQL(SQL_DELETE_ENTRIES_WATCH_DATABASE);
+                onCreate(db);
+            }
+
+            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                onUpgrade(db, oldVersion, newVersion);
+            }
+
+            public boolean WriteValuesToDatabase(String HeartRate,String StepCount,long timestamp)
+            {
+                float iHeartRate = Float.parseFloat(HeartRate);
+                float iStepCount = Float.parseFloat(StepCount);
+                //Check if the date entry for the device is already in the table
+                if( true == EntryAlreadyExist(timestamp))
+                {
+                    UpdateTableWithNewValues(iHeartRate,iStepCount,timestamp);
+                    //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
+                    return true;
+                }
+                else
+                {
+                    //Add new row in the table
+                    // Gets the data repository in write mode
+
+                    SQLiteDatabase db = this.getWritableDatabase();
+                    double Calories = CalculateCaloriesFromHeartRateAndTime(iHeartRate);
+                    Date date = new Date();
+                    String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", date.getTime())).toString();
+                    // Create a new map of values, where column names are the keys
+                    ContentValues values = new ContentValues();
+                    values.put(COLUMN_NAME_HBPM, HeartRate);
+                    values.put(COLUMN_NAME_STEPS, StepCount);
+                    values.put(COLUMN_NAME_CALORIES,Calories);
+                    values.put(COLUMN_NAME_TIMESTAMP,timestamp);
+                    // Insert the new row, returning the primary key value of the new row
+                    long newRowId;
+                    newRowId = db.insert(
+                            TABLE_NAME_WATCH_DATABASE,
+                            null,
+                            values);
+                    if (newRowId == -1)
+                        return false;
+                    else
+                        return true;
+                }
+            }
+             public boolean EntryAlreadyExist(long timestamp)
+             {
+                 Date today = new Date();
+                 today.setHours(0);
+                 today.setMinutes(0);
+                 today.setSeconds(0);
+                 //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
+                 long millisecond =  today.getTime();
+                 // String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", todayDate.getTime())).toString();
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 //if an entry exists that has value greater 00:00 today means an entry for today exist
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " where " + COLUMN_NAME_TIMESTAMP + " > '" + millisecond +"'" ;
+                 Cursor res = db.rawQuery(Query, null);
+                 if(res != null)
+                 {
+                     if (res.moveToFirst() && res.getCount() > 0)
+                     {
+                        return true;
+                     }
+                 }
+                 return false;
+             }
+             public boolean UpdateTableWithNewValues( float HeartRate, float StepCount, long time)
+             {
+                 Date today = new Date();
+                 today.setHours(0);
+                 today.setMinutes(0);
+                 today.setSeconds(0);
+                 //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
+                 long millisecond =  today.getTime();
+                 //String sTodayDate = df.format(todayDate);
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 ContentValues con = new ContentValues();
+                 con.put(FeedEntry.COLUMN_NAME_STEPS, StepCount);
+                 con.put(FeedEntry.COLUMN_NAME_HBPM, HeartRate);
+                 con.put(FeedEntry.COLUMN_NAME_TIMESTAMP, time );
+                 db.update(FeedEntry.TABLE_NAME_WATCH_DATABASE, con,
+                          FeedEntry.COLUMN_NAME_TIMESTAMP+">?" ,
+                         new String[]{Long.toString(millisecond)});
+
+                 return true;
+             }
+             public double CalculateCaloriesFromHeartRateAndTime(float HeartRate)
+             {
+                 double calories = 0.0f;
+                 return calories;
+             }
+             public  Cursor getValuesFromWatchDatabase()
+             {
+                  Cursor res = null;
+                 return res;
+             }
+             public void UpdateExternalDatabase(float HeartRate, float StepCount, long time)
+             {
+                 // Building Parameters
+                 Log.i("Inside function","Step 1");
+                 JSONParser jsonParser = new JSONParser();
+                 float Sleep = 0.0f;
+                 float Calories = 0.0f;
+                 String url_update_product = "https://people.cs.clemson.edu/~varshac/CPSC6820/Project/UpdateExternalDatabase.php";
+                 Log.i("Inside function","Step 2");
+                     List<NameValuePair> params = new ArrayList<NameValuePair>();
+                     params.add(new BasicNameValuePair("DeviceId", Integer.toString(15185)));
+                     params.add(new BasicNameValuePair("Steps", Float.toString(StepCount)));
+                     params.add(new BasicNameValuePair("HBPM", Float.toString(HeartRate)));
+                     params.add(new BasicNameValuePair("Sleep", Float.toString(Sleep)));
+                     params.add(new BasicNameValuePair("Calories", Float.toString(Calories)));
+                     params.add(new BasicNameValuePair("TimeStamp",Long.toString(time)));
+                     // params.add(new BasicNameValuePair("image",file));
+
+                     // getting JSON Object
+                     // Note that create product url accepts POST method
+                 Log.i("Inside function","Step 3");
+                     JSONObject json = jsonParser.makeHttpRequest(url_update_product,
+                             "POST", params);
+                 Log.i("Inside function","Step 4");
+
+             }
+         }
+    }
+}
+

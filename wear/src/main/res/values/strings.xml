@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyFitnessTracker</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="title_activity_message">MessageActivity</string>
+</resources>

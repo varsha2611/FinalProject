@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.varshachauhan.myfitnesstracker.MainActivity"
+    tools:deviceIds="wear"
+    android:addStatesFromChildren="false"
+    android:isScrollContainer="false"
+    android:filterTouchesWhenObscured="false">
+
+
+    <TextView
+        android:id="@+id/devicename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moto 360"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="45dp"
+        app:layout_box="all"/>
+
+    <TextView
+        android:id="@+id/steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Steps"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="60dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/nbofsteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="60dp"
+        app:layout_box="all"
+        android:editable="true" />
+
+    <TextView
+        android:id="@+id/heartrate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HBPM"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="75dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/hbpm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="75dp"
+        app:layout_box="all"/>
+
+    <TextView
+        android:id="@+id/sleep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sleep"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="90dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/sleephrs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="90dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calories"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="105dp"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/nbofCalories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="105dp"
+        app:layout_box="all"/>
+
+    <ImageButton
+        android:src="@drawable/home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/home"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="140dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:accessibilityLiveRegion="polite"
+        app:layout_box="all"/>
+    <ImageButton
+        android:src="@drawable/notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/notification"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="150dp"
+        android:background="@null"
+        app:layout_box="all"/>
+    <ImageButton
+        android:src="@drawable/trophy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="150dp"
+        android:background="@null"
+        android:id="@+id/leaderboard"
+        app:layout_box="all" />
+    <ImageButton
+        android:src="@drawable/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="135dp"
+        android:layout_marginTop="140dp"
+        android:background="@null"
+        android:id="@+id/info"
+        app:layout_box="all"/>
+
+    <ImageButton
+        android:id="@+id/sendData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/senddata"
+        android:background="@null"
+        android:layout_marginLeft="125dp"
+        android:layout_marginTop="25dp"
+        app:layout_box="all"/>
+
+</android.support.wearable.view.BoxInsetLayout>
