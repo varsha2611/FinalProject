@@ -337,7 +337,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     }
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.i("ONDATACHANGED","wearable");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
@@ -346,8 +345,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     String Steps = Integer.toString(dataMap.getInt("Steps"));
                     String HBPM = Integer.toString(dataMap.getInt("HBPM"));
-                    Log.i("Steps",Steps);
-                    Log.i("HBPM",HBPM);
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
