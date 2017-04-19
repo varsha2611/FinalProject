@@ -248,7 +248,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     public void OnButtonClickSendData(View view)
     {
-      //  mDBHandler.getDataFromDatabase();
         Intent i = new Intent(MainActivity.this, SendNotification.class);
         i.putExtra("HBPM", sHeartRate);
         Log.i("Called", "SendNotification");
