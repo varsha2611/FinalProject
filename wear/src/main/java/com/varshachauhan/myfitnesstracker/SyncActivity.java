@@ -160,6 +160,7 @@ public class SyncActivity extends Activity {
             // Closing all previous activities
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
+            finish();
             // updating UI from Background Thread
         }
 

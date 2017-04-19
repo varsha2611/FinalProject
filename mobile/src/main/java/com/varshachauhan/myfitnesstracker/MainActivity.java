@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity
                 String strName = "Varsha";
                 i.putExtra("user", strName);
                 startActivity(i);
+                finish();
             }
 
         });

@@ -126,6 +126,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 Intent infoIntent = new Intent(this, SyncActivity.class);
                 infoIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(infoIntent);
+                finish();
             }
         }
         return true;
@@ -252,6 +253,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         i.putExtra("HBPM", sHeartRate);
         Log.i("Called", "SendNotification");
         startActivity(i);
+        finish();
     }
     private void initGoogleApiClient() {
         mApiClient = new GoogleApiClient.Builder( this )
@@ -285,6 +287,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                             i.putExtra("response", "Decline");
                             Log.i("Called", "SendNotification");
                             startActivity(i);
+                            finish();
                         }
                     });
                     DeviceAddRequest.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
@@ -294,7 +297,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                             i.putExtra("response", "Accept");
                             Log.i("Called", "SendNotification");
                             startActivity(i);
-
+                            finish();
                         }
                     });
                     DeviceAddRequest.show();
