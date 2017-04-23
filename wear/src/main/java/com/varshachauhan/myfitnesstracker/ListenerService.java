@@ -19,6 +19,7 @@ public class ListenerService extends WearableListenerService {
         if( messageEvent.getPath().equalsIgnoreCase( START_ACTIVITY ) ) {
             Intent intent = new Intent( this, MainActivity.class );
             intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity( intent );
         } else {
             super.onMessageReceived(messageEvent);

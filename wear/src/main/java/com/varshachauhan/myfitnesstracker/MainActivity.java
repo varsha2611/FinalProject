@@ -31,6 +31,8 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
@@ -63,6 +65,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private String sStepCount = "0";
     private String sHeartRate = "0";
     private String sSleepHours = "0";
+    private String DeviceId = "";
     long SensorTimeStamp=0;
     int CurrentStep =0;
     private static final String WEAR_MESSAGE_PATH = "/message";
@@ -206,7 +209,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             String sEvent = event.toString();
             HeartRate=event.values[0];
             sHeartRate = Float.toString(HeartRate);
-
             AddSensorDataToDataLayer();
         }
         if(event.sensor.getType() == Sensor.TYPE_MOTION_DETECT)
@@ -243,6 +245,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
         putDataMapReq.getDataMap().putFloat("Steps", fSteps);
         putDataMapReq.getDataMap().putFloat("HBPM", fHBPM);
+        putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
+        putDataMapReq.setUrgent();
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mApiClient, putDataReq);
@@ -342,9 +346,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 // DataItem changed
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/mobile") == 0) {
+                    DeviceId = item.getUri().getHost();
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    String Steps = Integer.toString(dataMap.getInt("Steps"));
-                    String HBPM = Integer.toString(dataMap.getInt("HBPM"));
+                    String Steps = Float.toString(dataMap.getFloat("Steps"));
+                    String HBPM = Float.toString(dataMap.getFloat("HBPM"));
+                    String DeviceID = dataMap.getString("DeviceId");
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted

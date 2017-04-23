@@ -25,11 +25,7 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
 {
     private static final String START_ACTIVITY = "/start_activity";
     private static final String WEAR_MESSAGE_PATH = "/mobile";
-    private static final String SENSOR_STEPS = "/steps";
-    private static final String SENSOR_HBPM = "/hbpm";
     private String response="empty";
-    private String HeartRate = "empty";
-    private String Steps = "empty";
     private GoogleApiClient mApiClient;
 
     private ArrayAdapter<String> mAdapter;
@@ -39,8 +35,6 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         response = getIntent().getStringExtra("response");
-        HeartRate = getIntent().getStringExtra("HBPM");
-        Steps = getIntent().getStringExtra("Steps");
         initGoogleApiClient();
         init();
         StartMainActivity();
@@ -70,12 +64,7 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
 
     private void init()
     {
-        if(response != null)
-            sendMessage(WEAR_MESSAGE_PATH, response);
-        else if(HeartRate != null)
-            sendMessage(WEAR_MESSAGE_PATH,HeartRate);
-        else if(Steps != null)
-            sendMessage(SENSOR_STEPS,Steps);
+      sendMessage(WEAR_MESSAGE_PATH, response);
     }
 
     private void sendMessage( final String path, final String text ) {

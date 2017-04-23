@@ -26,7 +26,7 @@ public class AddDevice extends AppCompatActivity {
                 StartMainActivity();
             }
             else
-                {
+            {
                 toast("Wearable device accepted your request");
                 CreateEditorForDeviceDetails(response);
             }
