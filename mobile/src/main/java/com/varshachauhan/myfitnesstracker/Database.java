@@ -33,8 +33,17 @@ public class Database extends SQLiteOpenHelper{
         db = this.getWritableDatabase();
     }
 
+    private String user = "Alex";
+    private String pass = "pass";
+
+    public void setLogin(String userName, String passWord){
+        user = userName;
+        pass = passWord;
+    }
+
+
     public void pullUserDevices(){
-        new getData("Alex", "pass");
+        new getData(user, pass);
         try{
             JSONArray array = new JSONArray(getData);
             for(int i = 0; i < array.length(); i++){
