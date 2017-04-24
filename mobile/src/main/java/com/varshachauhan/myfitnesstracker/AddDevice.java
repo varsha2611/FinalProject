@@ -43,7 +43,14 @@ public class AddDevice extends AppCompatActivity {
         intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity( intent );
     }
-    public void CreateEditorForDeviceDetails(String nodeId)
+
+    public void SendDeviceId(String response)
+    {
+        Intent intent = new Intent( this, SendNotification.class );
+        intent.putExtra("NodeId",response);
+        startActivity( intent );
+    }
+    public void CreateEditorForDeviceDetails(final String nodeId)
     {
         final AlertDialog.Builder addDevice = new AlertDialog.Builder(AddDevice.this);
         addDevice.setTitle("Add Device");
@@ -67,13 +74,13 @@ public class AddDevice extends AppCompatActivity {
                                 String deviceName = "Unknown Watch";
                                 dataBase.exec("insert into watches (deviceid, nickname) values (\"" + device + "\", \"Unknown Watch \")");
                                 toast("Added Watch #" + device);
-                                StartMainActivity();
+                                SendDeviceId(nodeId);
                             }
                             else
                             {
                                 dataBase.exec("insert into watches (deviceid, nickname) values (\"" + device + "\", \"" + name + "\")");
                                 toast("Added " + name);
-                                StartMainActivity();
+                                SendDeviceId(nodeId);
                             }
                         } else
                             {

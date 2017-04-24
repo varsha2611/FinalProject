@@ -89,7 +89,6 @@ public class SyncActivity extends Activity {
              * getting All products from url
              * */
             // Building Parameters
-            mDBHandler.UpdateExternalDatabase(iHeartRate,iSteps,time);
            /* List<NameValuePair> params = new ArrayList<NameValuePair>();
             // getting JSON string from URL
             JSONObject json = jParser.makeHttpRequest(url_update_external, "GET", params);

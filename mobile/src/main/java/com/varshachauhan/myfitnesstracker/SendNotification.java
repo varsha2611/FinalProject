@@ -1,6 +1,7 @@
 package com.varshachauhan.myfitnesstracker;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,8 +22,10 @@ import com.google.android.gms.wearable.Wearable;
 public class SendNotification extends Activity  implements MessageApi.MessageListener,GoogleApiClient.ConnectionCallbacks
 {
     private static final String START_ACTIVITY = "/start_activity";
+    private static final String WEAR_NODEID_PATH ="/nodeId";
     private static final String WEAR_MESSAGE_PATH = "/message";
     private String user="empty";
+    private String nodeId = "empty";
     private GoogleApiClient mApiClient;
 
     private ArrayAdapter<String> mAdapter;
@@ -32,9 +35,14 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         user = getIntent().getStringExtra("user");
+        nodeId = getIntent().getStringExtra("NodeId");
+        if(user != null)
         Log.i("user value",user);
+        if(nodeId != null)
+            Log.i("nodeId",nodeId);
         initGoogleApiClient();
         init();
+        StartMainActivity();
     }
 
     private void initGoogleApiClient() {
@@ -53,7 +61,10 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
 
     private void init()
     {
-        sendMessage(WEAR_MESSAGE_PATH, user);
+        if(user != null)
+            sendMessage(WEAR_MESSAGE_PATH, user);
+        else if(nodeId != null)
+            sendMessage(WEAR_NODEID_PATH, nodeId);
     }
 
     private void sendMessage( final String path, final String text ) {
@@ -76,6 +87,12 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
         }).start();
     }
 
+    public void StartMainActivity()
+    {
+        Intent intent = new Intent( this, MainActivity.class );
+        intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        startActivity( intent );
+    }
     @Override
     public void onConnected(Bundle bundle) {
 

@@ -40,21 +40,10 @@ public class ListenerService extends WearableListenerService implements DataApi.
         if( mApiClient != null && !( mApiClient.isConnected() || mApiClient.isConnecting() ) )
             mApiClient.connect();
     }
-    private void AddSensorDataToDataLayer()
-    {
-        initGoogleApiClient();
-       PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
-        putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
-        putDataMapReq.setUrgent();
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mApiClient, putDataReq);
-    }
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         String path = messageEvent.getPath();
-        AddSensorDataToDataLayer();
         Log.i("MessageRecieved",path);
         if( messageEvent.getPath().equalsIgnoreCase( START_ACTIVITY ) ) {
             String response = new String (messageEvent.getData());
@@ -62,22 +51,6 @@ public class ListenerService extends WearableListenerService implements DataApi.
             Log.i("MessageRecieved",response);
             Intent intent = new Intent( this, AddDevice.class );
             intent.putExtra("response",response);
-            intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-            startActivity( intent );
-        }
-        else if ( messageEvent.getPath().equalsIgnoreCase( SENSOR_STEPS ) ) {
-            String sensorData = new String (messageEvent.getData());
-            Log.i("MessageRecieved",sensorData);
-            Intent intent = new Intent( this, MainActivity.class );
-            intent.putExtra("Steps",sensorData);
-            intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-            startActivity( intent );
-        }
-        else if ( messageEvent.getPath().equalsIgnoreCase( SENSOR_HBPM ) ) {
-            String sensorData = new String (messageEvent.getData());
-            Log.i("MessageRecieved",sensorData);
-            Intent intent = new Intent( this, MainActivity.class );
-            intent.putExtra("HBPM",sensorData);
             intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
             startActivity( intent );
         }
@@ -100,7 +73,7 @@ public class ListenerService extends WearableListenerService implements DataApi.
                     intent.putExtra("Steps",Steps);
                     intent.putExtra("HBPM",HBPM);
                     intent.putExtra("DeviceId",DeviceID);
-                    Log.i("DeviceId",DeviceID);
+                    Log.i("DeviceId Here",DeviceID);
                     intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity( intent );

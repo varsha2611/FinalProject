@@ -65,10 +65,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private String sStepCount = "0";
     private String sHeartRate = "0";
     private String sSleepHours = "0";
-    private String DeviceId = "";
     long SensorTimeStamp=0;
-    int CurrentStep =0;
     private static final String WEAR_MESSAGE_PATH = "/message";
+    private static final String WEAR_NODEID_PATH ="/nodeId";
     private GoogleApiClient mApiClient;
     private Context context = this;
 
@@ -175,7 +174,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
     public final void onSensorChanged(SensorEvent event) {
         long sensorTimeReference = 0l;
-        int DeviceId = 1;
         long myTimeReference = 0l;
         float StepCount = 0;
         float HeartRate = 0;
@@ -218,7 +216,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             sSleepHours = Float.toString(MotionDetect);
         }
         updateDisplay();
-        // mDBHandler.WriteValuesToDatabase(DeviceId,HeartRate,StepCount,time);
     }
 
     @Override
@@ -241,11 +238,15 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     {
         Float fHBPM = Float.parseFloat(sHeartRate);
         Float fSteps = Float.parseFloat(sStepCount);
+        String DeviceId = mDBHandler.getDeviceId();
+        if(DeviceId !=null)
+            Log.i("DeviceId in watch",DeviceId);
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
         putDataMapReq.getDataMap().putFloat("Steps", fSteps);
         putDataMapReq.getDataMap().putFloat("HBPM", fHBPM);
-        putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
+        if(DeviceId != null)
+         putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
         putDataMapReq.setUrgent();
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
@@ -280,8 +281,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         runOnUiThread( new Runnable() {
             @Override
             public void run() {
+                Log.i("path",messageEvent.getPath());
+                Log.i("Data",new String(messageEvent.getData()));
                 if( messageEvent.getPath().equalsIgnoreCase( WEAR_MESSAGE_PATH ) ) {
-                    String nodeId = messageEvent.getSourceNodeId();
                     String user = new String (messageEvent.getData());
                     AlertDialog.Builder DeviceAddRequest = new AlertDialog.Builder(context);
                     DeviceAddRequest.setMessage(user + " has requested to add the device");
@@ -289,8 +291,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                             Intent i = new Intent(MainActivity.this, SendNotification.class);
-                            i.putExtra("response", "Decline");
-                            Log.i("Called", "SendNotification");
+                            i.putExtra("response","Decline");
                             startActivity(i);
                             finish();
                         }
@@ -299,14 +300,17 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                             Intent i = new Intent(MainActivity.this, SendNotification.class);
-                            i.putExtra("response", "Accept");
-                            Log.i("Called", "SendNotification");
+                            i.putExtra("response","Accept");
                             startActivity(i);
                             finish();
                         }
                     });
                     DeviceAddRequest.show();
 
+                }
+                else if(messageEvent.getPath().equalsIgnoreCase( WEAR_NODEID_PATH ) ) {
+                    String DeviceId = new String(messageEvent.getData());
+                    mDBHandler.StoreDeviceIdToDatabase(DeviceId);
                 }
             }
         });
@@ -346,7 +350,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 // DataItem changed
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/mobile") == 0) {
-                    DeviceId = item.getUri().getHost();
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     String Steps = Float.toString(dataMap.getFloat("Steps"));
                     String HBPM = Float.toString(dataMap.getFloat("HBPM"));

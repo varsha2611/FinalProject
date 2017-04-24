@@ -28,9 +28,7 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
     private String response="empty";
     private GoogleApiClient mApiClient;
 
-    private ArrayAdapter<String> mAdapter;
-
-    @Override
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -74,13 +72,10 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
                 NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mApiClient ).await();
                 for(Node node : nodes.getNodes()) {
                     String message = text;
-                    Log.i("message",text);
-                    if(message.equals("Accept"))
+                    if(message != null && message.equals("Accept"))
                      message= node.getId();
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                             mApiClient, node.getId(), path, message.getBytes() ).await();
-                    Log.i("path",path);
-                    Log.i("message",text);
                 }
 
                 runOnUiThread( new Runnable() {

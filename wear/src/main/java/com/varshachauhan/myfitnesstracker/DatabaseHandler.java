@@ -32,11 +32,13 @@ public class DatabaseHandler {
     /* Inner class that defines the table contents */
     public static abstract class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME_WATCH_DATABASE = "WATCH_DATABASE";
+        public static final String TABLE_NAME_WATCH_DEVICEID = "WATCH_DEVICE_ID";
         public static final String COLUMN_NAME_HBPM= "HBPM";
         public static final String COLUMN_NAME_STEPS= "STEPS";
         public static final String COLUMN_NAME_CALORIES= "CALORIES";
         public static final String COLUMN_NAME_SLEEP= "SLEEP";
         public static final String COLUMN_NAME_TIMESTAMP= "TIMESTAMP";
+        public static final String COLUMN_NAME_DEVICEID= "DEVICE_ID";
 
 
 
@@ -48,9 +50,14 @@ public class DatabaseHandler {
                         FeedEntry.COLUMN_NAME_SLEEP+ " INTEGER," +
                         FeedEntry.COLUMN_NAME_TIMESTAMP+ " TIMESTAMP" +
                         ")";
+        public static final String SQL_CREATE_WATCH_DEVICEID_TABLE =
+                "CREATE TABLE " + FeedEntry.TABLE_NAME_WATCH_DEVICEID+ " (" +
+                        FeedEntry.COLUMN_NAME_DEVICEID + " TEXT )";
 
         private static final String SQL_DELETE_ENTRIES_WATCH_DATABASE =
                 "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME_WATCH_DATABASE;
+        private static final String SQL_DELETE_ENTRIES_WATCH_DEVICE_ID =
+                "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME_WATCH_DEVICEID;
 
          /**
          * FeedReaderHelper Class to create Database
@@ -58,7 +65,7 @@ public class DatabaseHandler {
         public static class FeedReaderDbHelper extends SQLiteOpenHelper {
 
             // If you change the database schema, you must increment the database version.
-            public static final int DATABASE_VERSION = 2;
+            public static final int DATABASE_VERSION = 1;
             public static final String DATABASE_NAME = "WatchDatabase.db";
 
             public FeedReaderDbHelper(Context context) {
@@ -68,12 +75,14 @@ public class DatabaseHandler {
 
             public void onCreate(SQLiteDatabase db) {
                 db.execSQL(SQL_CREATE_WATCH_DATABASE_TABLE);
+                db.execSQL (SQL_CREATE_WATCH_DEVICEID_TABLE);
             }
 
             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
                 // This database is only a cache for online data, so its upgrade policy is
                 // to simply to discard the data and start over
                 db.execSQL(SQL_DELETE_ENTRIES_WATCH_DATABASE);
+                db.execSQL(SQL_DELETE_ENTRIES_WATCH_DEVICE_ID);
                 onCreate(db);
             }
 
@@ -171,31 +180,38 @@ public class DatabaseHandler {
                   Cursor res = null;
                  return res;
              }
-             public void UpdateExternalDatabase(float HeartRate, float StepCount, long time)
+             public String getDeviceId()
              {
-                 // Building Parameters
-                 Log.i("Inside function","Step 1");
-                 JSONParser jsonParser = new JSONParser();
-                 float Sleep = 0.0f;
-                 float Calories = 0.0f;
-                 String url_update_product = "https://people.cs.clemson.edu/~varshac/CPSC6820/Project/UpdateExternalDatabase.php";
-                 Log.i("Inside function","Step 2");
-                     List<NameValuePair> params = new ArrayList<NameValuePair>();
-                     params.add(new BasicNameValuePair("DeviceId", Integer.toString(15185)));
-                     params.add(new BasicNameValuePair("Steps", Float.toString(StepCount)));
-                     params.add(new BasicNameValuePair("HBPM", Float.toString(HeartRate)));
-                     params.add(new BasicNameValuePair("Sleep", Float.toString(Sleep)));
-                     params.add(new BasicNameValuePair("Calories", Float.toString(Calories)));
-                     params.add(new BasicNameValuePair("TimeStamp",Long.toString(time)));
-                     // params.add(new BasicNameValuePair("image",file));
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 String DeviceId = "";
+                 //if an entry exists that has value greater 00:00 today means an entry for today exist
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DEVICEID;
+                 Cursor res = db.rawQuery(Query, null);
+                 if(res != null)
+                 {
+                     if (res.moveToFirst() && res.getCount() > 0)
+                     {
+                        DeviceId = res.getString(0);
+                     }
+                 }
+                 return DeviceId;
+             }
 
-                     // getting JSON Object
-                     // Note that create product url accepts POST method
-                 Log.i("Inside function","Step 3");
-                     JSONObject json = jsonParser.makeHttpRequest(url_update_product,
-                             "POST", params);
-                 Log.i("Inside function","Step 4");
-
+             public boolean StoreDeviceIdToDatabase(String devideId)
+             {
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 ContentValues values = new ContentValues();
+                 values.put(COLUMN_NAME_DEVICEID, devideId);
+                 // Insert the new row, returning the primary key value of the new row
+                 long newRowId;
+                 newRowId = db.insert(
+                         TABLE_NAME_WATCH_DEVICEID,
+                         null,
+                         values);
+                 if (newRowId == -1)
+                     return false;
+                 else
+                     return true;
              }
          }
     }
