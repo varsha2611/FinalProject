@@ -40,6 +40,8 @@ public class Database extends SQLiteOpenHelper{
                     db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
                 }
             }
+            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
+            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
         } catch (Exception e){}
     }
 

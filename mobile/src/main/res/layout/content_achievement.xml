@@ -24,9 +24,11 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             tools:ignore="HardcodedText" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <TextView
@@ -34,8 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Max steps in a day"
-                android:textSize="24sp"
+                android:text="Max steps"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -45,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textAlignment="textEnd"
+                android:layout_toLeftOf="@+id/maxStepsDay"
+                android:layout_marginRight="10dp"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -54,14 +57,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textAlignment="textEnd"
+                android:layout_alignParentEnd="true"
                 tools:ignore="HardcodedText" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <TextView
@@ -69,8 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Max calories in a day"
-                android:textSize="24sp"
+                android:text="Max calories"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -80,6 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
+                android:layout_toLeftOf="@+id/maxCaloriesDay"
+                android:layout_marginRight="10dp"
                 android:textAlignment="textEnd"
                 tools:ignore="HardcodedText" />
 
@@ -89,13 +96,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textAlignment="textEnd"
+                android:layout_alignParentEnd="true"
                 tools:ignore="HardcodedText" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <TextView
@@ -103,8 +112,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Max sleep in a day"
-                android:textSize="24sp"
+                android:text="Max sleep"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -113,6 +122,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_toLeftOf="@+id/maxSleepDay"
+                android:layout_marginRight="10dp"
                 android:text="TextView"
                 android:textAlignment="textEnd"
                 tools:ignore="HardcodedText" />
@@ -123,13 +134,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textAlignment="textEnd"
+                android:layout_alignParentEnd="true"
                 tools:ignore="HardcodedText" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
             <TextView
@@ -137,8 +150,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Min sleep in a day"
-                android:textSize="24sp"
+                android:text="Min sleep"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -147,6 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_toLeftOf="@+id/minSleepDay"
+                android:layout_marginRight="10dp"
                 android:text="TextView"
                 android:textAlignment="textEnd"
                 tools:ignore="HardcodedText" />
@@ -157,9 +172,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="TextView"
-                android:textAlignment="textEnd"
+                android:layout_alignParentEnd="true"
                 tools:ignore="HardcodedText" />
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

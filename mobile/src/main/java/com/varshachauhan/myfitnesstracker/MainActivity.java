@@ -112,13 +112,16 @@ public class MainActivity extends AppCompatActivity
         TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
         exampleRow.setLayoutParams(lp);
         TextView device = new TextView(myContext);
-        device.setText("1234    ");
+        device.setText("1234");
+        device.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(device);
         TextView steps = new TextView(myContext);
-        steps.setText("5678    ");
+        steps.setText("5678");
+        steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(steps);
         TextView calories = new TextView(myContext);
         calories.setText("9010");
+        steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(calories);
         leaderBoard.addView(exampleRow);
     }
@@ -146,8 +149,19 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View v) {
                         final AlertDialog.Builder deviceContext = new AlertDialog.Builder(MainActivity.this);
                         deviceContext.setTitle(nickname);
-                        final TextView body = new TextView(MainActivity.this);
-                        body.setText("Make and model information");
+                        final LinearLayout body = new LinearLayout(MainActivity.this);
+                        TextView devCalories = new TextView(MainActivity.this);
+                        int lcalories = 0;                                                      //Here is where you can set values to be displayed from the device view
+                        devCalories.setText(Integer.toString(lcalories));
+                        body.addView(devCalories);
+                        TextView devSteps = new TextView(MainActivity.this);
+                        float lsteps = 0;
+                        devSteps.setText(Float.toString(lsteps));
+                        body.addView(devSteps);
+                        TextView devHBPM = new TextView(MainActivity.this);
+                        float lhbpm = 0;
+                        devHBPM.setText(Float.toString(lhbpm));
+                        body.addView(devHBPM);
                         deviceContext.setView(body);
                         deviceContext.setPositiveButton("Delete device", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
