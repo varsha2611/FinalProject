@@ -12,82 +12,30 @@
     android:filterTouchesWhenObscured="false">
 
     <TextView
-        android:id="@+id/activityname"
+        android:id="@+id/app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Achievements"
+        android:text="My Health Tracker"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:textColor="@color/black"
         app:layout_box="all"/>
     <TextView
-        android:id="@+id/steps"
+        android:id="@+id/developer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Steps"
+        android:text="Varsha and Alexander"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="45dp"
         android:textColor="@color/black"
         app:layout_box="all"/>
-
     <TextView
-        android:id="@+id/MaxStep1"
+        android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="My fitness tracker, provides core features to keep up your body fit and healthy. For more info download Mobile app"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="70dp"
-        android:textColor="@color/black"
-        app:layout_box="all"
-        android:editable="true" />
-
-    <TextView
-        android:id="@+id/MaxStep2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="85dp"
-        android:textColor="@color/black"
-        app:layout_box="all"/>
-    <TextView
-        android:id="@+id/MaxStep3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:textColor="@color/black"
-        android:layout_marginTop="100dp"
-        app:layout_box="all"/>
-    <TextView
-        android:id="@+id/calories"
-        android:layout_width="wrap_content"
-        android:textColor="@color/black"
-        android:text="Calories"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="55dp"
-        app:layout_box="all"/>
-
-    <TextView
-        android:id="@+id/MaxCalories1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="70dp"
-        android:textColor="@color/black"
-        app:layout_box="all"/>
-    <TextView
-        android:id="@+id/MaxCalories2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="85dp"
-        android:textColor="@color/black"
-        app:layout_box="all"/>
-    <TextView
-        android:id="@+id/MaxCalories3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="65dp"
         android:textColor="@color/black"
         app:layout_box="all"/>
 

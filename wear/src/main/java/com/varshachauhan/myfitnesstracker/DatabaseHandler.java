@@ -93,6 +93,7 @@ public class DatabaseHandler {
              public boolean WriteValuesToDatabase(String HeartRate, String StepCount, long timestamp) {
                  float iHeartRate = Float.parseFloat(HeartRate);
                  float iStepCount = Float.parseFloat(StepCount);
+                 Log.i("timestamp",Long.toString(timestamp));
                  //Check if the date entry for the device is already in the table
                  if (true == EntryAlreadyExist(timestamp)) {
                      UpdateTableWithNewValues(iHeartRate, iStepCount, timestamp);
@@ -129,6 +130,7 @@ public class DatabaseHandler {
                  today.setSeconds(0);
                  //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
                  long millisecond = today.getTime();
+                 Log.i("today's date",Long.toString(millisecond));
                  // String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", todayDate.getTime())).toString();
                  SQLiteDatabase db = this.getWritableDatabase();
                  //if an entry exists that has value greater 00:00 today means an entry for today exist
@@ -136,6 +138,7 @@ public class DatabaseHandler {
                  Cursor res = db.rawQuery(Query, null);
                  if (res != null) {
                      if (res.moveToFirst() && res.getCount() > 0) {
+                         Log.i("No of rows",Integer.toString(res.getCount()));
                          return true;
                      }
                  }
@@ -208,7 +211,7 @@ public class DatabaseHandler {
                  TopThreeValues[0]="0.0";
                  TopThreeValues[1]="0.0";
                  TopThreeValues[2]="0.0";
-                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY  " + columnName;
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY  " + columnName + " DESC";
                  Cursor res = db.rawQuery(Query, null);
                  if (res != null) {
                      if (res.moveToFirst() && res.getCount() > 0) {
@@ -216,6 +219,7 @@ public class DatabaseHandler {
                          int count = 0;
                          do {
                              Float data = res.getFloat(res.getColumnIndex(columnName));
+                             Log.i("steps max",Float.toString(data));
                              if (count == 0)
                                  TopThreeValues[0] = Float.toString(data);
                              if (count == 1)

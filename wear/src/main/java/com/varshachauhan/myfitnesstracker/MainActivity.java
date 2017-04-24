@@ -53,6 +53,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private TextView mHBPMView;
     private TextView mDate;
     private ImageButton mNotification;
+    private ImageButton mInfo;
     private SensorManager mSensorManager;
     DatabaseHandler.FeedEntry.FeedReaderDbHelper mDBHandler;
     private Sensor mStepCount;
@@ -78,21 +79,25 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         mHBPMView = (TextView) findViewById(R.id.hbpm);
         mDate = (TextView)findViewById(R.id.date);
         mNotification = (ImageButton)findViewById(R.id.leaderboard);
+        mInfo =  (ImageButton)findViewById(R.id.info);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mStepCount = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
         mSleepHours = mSensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT);
         mDBHandler = new DatabaseHandler.FeedEntry.FeedReaderDbHelper(this);
-        View view;
         initGoogleApiClient();
-        LayoutInflater mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = mInflater.inflate(R.layout.activity_main, null);
-        mNotification.setOnClickListener(new View.OnClickListener() {
+                mNotification.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Log.i("inside function","this definition");
                 OnButtonClickAchievements(v);
 
+            }
+        });
+        mInfo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, InfoActivity.class);
+                startActivity(i);
+                finish();
             }
         });
     }
@@ -182,8 +187,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mStepCount, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mHeartRate, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mStepCount, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mHeartRate, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mSleepHours, SensorManager.SENSOR_DELAY_FASTEST);
         if( mApiClient != null && !( mApiClient.isConnected() || mApiClient.isConnecting() ) )
             mApiClient.connect();
@@ -217,8 +222,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     public void OnButtonClickAchievements(View view)
     {
         Intent i = new Intent(MainActivity.this, ShowMyAchievements.class);
-        i.putExtra("HBPM", sHeartRate);
-        Log.i("Called", "SendNotification");
         startActivity(i);
         finish();
     }
