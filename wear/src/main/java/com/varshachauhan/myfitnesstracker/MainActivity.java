@@ -207,10 +207,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         String DeviceId = mDBHandler.getDeviceId();
         if(DeviceId !=null)
             Log.i("DeviceId in watch",DeviceId);
+        Log.i("DeviceId in watch","null");
 
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
         putDataMapReq.getDataMap().putFloat("Steps", fSteps);
         putDataMapReq.getDataMap().putFloat("HBPM", fHBPM);
+        putDataMapReq.getDataMap().putLong("TimeStamp",SensorTimeStamp);
         if(DeviceId != null)
          putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
         putDataMapReq.setUrgent();
@@ -274,7 +276,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 }
                 else if(messageEvent.getPath().equalsIgnoreCase( WEAR_NODEID_PATH ) ) {
                     String DeviceId = new String(messageEvent.getData());
-                    mDBHandler.StoreDeviceIdToDatabase(DeviceId);
+                    if(DeviceId != null)
+                      mDBHandler.StoreDeviceIdToDatabase(DeviceId);
                 }
             }
         });

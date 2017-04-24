@@ -93,7 +93,7 @@ public class DatabaseHandler {
              public boolean WriteValuesToDatabase(String HeartRate, String StepCount, long timestamp) {
                  float iHeartRate = Float.parseFloat(HeartRate);
                  float iStepCount = Float.parseFloat(StepCount);
-                 Log.i("timestamp",Long.toString(timestamp));
+
                  //Check if the date entry for the device is already in the table
                  if (true == EntryAlreadyExist(timestamp)) {
                      UpdateTableWithNewValues(iHeartRate, iStepCount, timestamp);
@@ -150,9 +150,7 @@ public class DatabaseHandler {
                  today.setHours(0);
                  today.setMinutes(0);
                  today.setSeconds(0);
-                 //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
                  long millisecond = today.getTime();
-                 //String sTodayDate = df.format(todayDate);
                  SQLiteDatabase db = this.getWritableDatabase();
                  ContentValues con = new ContentValues();
                  con.put(FeedEntry.COLUMN_NAME_STEPS, StepCount);

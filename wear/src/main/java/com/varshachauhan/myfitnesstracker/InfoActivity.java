@@ -45,7 +45,7 @@ public class InfoActivity extends WearableActivity {
         });
         mAchievements.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(InfoActivity.this, InfoActivity.class);
+                Intent i = new Intent(InfoActivity.this, ShowMyAchievements.class);
                 startActivity(i);
                 finish();
             }

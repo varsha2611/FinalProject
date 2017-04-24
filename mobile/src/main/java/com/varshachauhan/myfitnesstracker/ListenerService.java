@@ -28,8 +28,8 @@ public class ListenerService extends WearableListenerService implements DataApi.
     private static final String SENSOR_STEPS = "/steps";
     private static final String SENSOR_HBPM = "/hbpm";
     private GoogleApiClient mApiClient;
-    private Context context = this;
     String DeviceId ="";
+    Database dataBase;
 
     private void initGoogleApiClient() {
         mApiClient = new GoogleApiClient.Builder( this )
@@ -43,12 +43,9 @@ public class ListenerService extends WearableListenerService implements DataApi.
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
-        String path = messageEvent.getPath();
-        Log.i("MessageRecieved",path);
         if( messageEvent.getPath().equalsIgnoreCase( START_ACTIVITY ) ) {
             String response = new String (messageEvent.getData());
             DeviceId = messageEvent.getSourceNodeId();
-            Log.i("MessageRecieved",response);
             Intent intent = new Intent( this, AddDevice.class );
             intent.putExtra("response",response);
             intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
@@ -63,23 +60,17 @@ public class ListenerService extends WearableListenerService implements DataApi.
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
+                dataBase = new Database(this.getApplicationContext());
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/mobile") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    String Steps = Float.toString(dataMap.getFloat("Steps"));
-                    String HBPM = Float.toString(dataMap.getFloat("HBPM"));
+                    Float Steps = dataMap.getFloat("Steps");
+                    Float HBPM = dataMap.getFloat("HBPM");
                     String DeviceID = dataMap.getString("DeviceId");
-                    Intent intent = new Intent( this, MainActivity.class );
-                    intent.putExtra("Steps",Steps);
-                    intent.putExtra("HBPM",HBPM);
-                    intent.putExtra("DeviceId",DeviceID);
+                    Long timestamp = dataMap.getLong("TimeStamp");
 
-                    //TO DO
                     /* Add Values to Database*/
-                    Log.i("DeviceId Here",DeviceID);
-                    intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity( intent );
+                    dataBase.InsertSensorDataIntoTable(Steps,HBPM,timestamp,DeviceID);
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
