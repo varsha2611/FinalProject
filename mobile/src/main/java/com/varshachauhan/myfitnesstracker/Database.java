@@ -10,11 +10,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alex on 4/2/2017.
@@ -95,5 +99,15 @@ public class Database extends SQLiteOpenHelper{
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+    public void AddUserToExternalDatabase(String url, String DeviceId, String Devicename)
+    {
+        // Building Parameters
+        JSONParser jsonParser = new JSONParser();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("DeviceId", DeviceId ));
+            params.add(new BasicNameValuePair("DeviceName", Devicename));
+            JSONObject json = jsonParser.makeHttpRequest(url,
+                    "POST", params);
     }
 }

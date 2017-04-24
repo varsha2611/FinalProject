@@ -48,10 +48,6 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         MessageApi.MessageListener, GoogleApiClient.ConnectionCallbacks
 {
 
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
-    //Alex's test comment
-
     private BoxInsetLayout mContainerView;
     private TextView mStepsView;
     private TextView mHBPMView;
@@ -81,7 +77,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         mStepsView = (TextView) findViewById(R.id.nbofsteps);
         mHBPMView = (TextView) findViewById(R.id.hbpm);
         mDate = (TextView)findViewById(R.id.date);
-        mNotification = (ImageButton)findViewById(R.id.notification);
+        mNotification = (ImageButton)findViewById(R.id.leaderboard);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mStepCount = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
@@ -91,50 +87,15 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         initGoogleApiClient();
         LayoutInflater mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = mInflater.inflate(R.layout.activity_main, null);
-        final ImageButton button = (ImageButton) view.findViewById(R.id.notification);
         mNotification.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 Log.i("inside function","this definition");
-
-            }
-        });
-        final ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendData);
-        mNotification.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-                Log.i("inside function","this definition");
-                OnButtonClickSendData(v);
+                OnButtonClickAchievements(v);
 
             }
         });
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user_menu, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        int check = 0;
-        if(id==R.id.sync)
-        {
-            if(id==R.id.sync)
-            {
-                Intent infoIntent = new Intent(this, SyncActivity.class);
-                infoIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(infoIntent);
-                finish();
-            }
-        }
-        return true;
-    }
-
     @Override
     public void onEnterAmbient(Bundle ambientDetails) {
         super.onEnterAmbient(ambientDetails);
@@ -253,9 +214,9 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                 Wearable.DataApi.putDataItem(mApiClient, putDataReq);
     }
 
-    public void OnButtonClickSendData(View view)
+    public void OnButtonClickAchievements(View view)
     {
-        Intent i = new Intent(MainActivity.this, SendNotification.class);
+        Intent i = new Intent(MainActivity.this, ShowMyAchievements.class);
         i.putExtra("HBPM", sHeartRate);
         Log.i("Called", "SendNotification");
         startActivity(i);

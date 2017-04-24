@@ -5,92 +5,90 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.varshachauhan.myfitnesstracker.MainActivity"
+    tools:context="com.varshachauhan.myfitnesstracker.ShowMyAchievements"
     tools:deviceIds="wear"
     android:addStatesFromChildren="false"
     android:isScrollContainer="false"
     android:filterTouchesWhenObscured="false">
 
-
     <TextView
         android:id="@+id/devicename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Moto 360"
+        android:text="My Achievements"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
+        android:textColor="@color/black"
         app:layout_box="all"/>
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="45dp"
-        app:layout_box="all"/>
-
     <TextView
         android:id="@+id/steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Steps"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="45dp"
+        android:textColor="@color/black"
         app:layout_box="all"/>
+
     <TextView
-        android:id="@+id/nbofsteps"
+        android:id="@+id/MaxStep1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="60dp"
+        android:textColor="@color/black"
         app:layout_box="all"
         android:editable="true" />
 
     <TextView
-        android:id="@+id/heartrate"
+        android:id="@+id/MaxStep2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HBPM"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="75dp"
+        android:textColor="@color/black"
         app:layout_box="all"/>
     <TextView
-        android:id="@+id/hbpm"
+        android:id="@+id/MaxStep3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="75dp"
-        app:layout_box="all"/>
-
-    <TextView
-        android:id="@+id/sleep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sleep"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="90dp"
-        app:layout_box="all"/>
-    <TextView
-        android:id="@+id/sleephrs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:textColor="@color/black"
         android:layout_marginTop="90dp"
         app:layout_box="all"/>
     <TextView
         android:id="@+id/calories"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:text="Calories"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="105dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="45dp"
         app:layout_box="all"/>
+
     <TextView
-        android:id="@+id/nbofCalories"
+        android:id="@+id/MaxCalories1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginTop="60dp"
+        android:textColor="@color/black"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/MaxCalories2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="75dp"
+        android:textColor="@color/black"
+        app:layout_box="all"/>
+    <TextView
+        android:id="@+id/MaxCalories3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="90dp"
+        android:textColor="@color/black"
         app:layout_box="all"/>
 
     <ImageButton

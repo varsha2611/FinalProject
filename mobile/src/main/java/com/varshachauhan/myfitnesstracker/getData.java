@@ -1,14 +1,6 @@
 package com.varshachauhan.myfitnesstracker;
 
-/**
- * Created by varshac on 4/15/2017.
- */
-
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/launch_icon"
@@ -43,20 +42,21 @@
         <activity android:name=".SendNotification" />
 
         <service android:name=".ListenerService">
-
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
-                 <data
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+
+                <data
                     android:host="*"
                     android:pathPrefix="/mobile"
                     android:scheme="wear" />
             </intent-filter>
         </service>
 
-        <activity android:name=".AddDevice"
+        <activity
+            android:name=".AddDevice"
             android:label="MyHealthTracker"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

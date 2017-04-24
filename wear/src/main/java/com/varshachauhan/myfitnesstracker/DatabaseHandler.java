@@ -64,141 +64,129 @@ public class DatabaseHandler {
          */
         public static class FeedReaderDbHelper extends SQLiteOpenHelper {
 
-            // If you change the database schema, you must increment the database version.
-            public static final int DATABASE_VERSION = 1;
-            public static final String DATABASE_NAME = "WatchDatabase.db";
+             // If you change the database schema, you must increment the database version.
+             public static final int DATABASE_VERSION = 1;
+             public static final String DATABASE_NAME = "WatchDatabase.db";
 
-            public FeedReaderDbHelper(Context context) {
-                super(context, DATABASE_NAME, null, DATABASE_VERSION);
-                this.getWritableDatabase();
-            }
+             public FeedReaderDbHelper(Context context) {
+                 super(context, DATABASE_NAME, null, DATABASE_VERSION);
+                 this.getWritableDatabase();
+             }
 
-            public void onCreate(SQLiteDatabase db) {
-                db.execSQL(SQL_CREATE_WATCH_DATABASE_TABLE);
-                db.execSQL (SQL_CREATE_WATCH_DEVICEID_TABLE);
-            }
+             public void onCreate(SQLiteDatabase db) {
+                 db.execSQL(SQL_CREATE_WATCH_DATABASE_TABLE);
+                 db.execSQL(SQL_CREATE_WATCH_DEVICEID_TABLE);
+             }
 
-            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                // This database is only a cache for online data, so its upgrade policy is
-                // to simply to discard the data and start over
-                db.execSQL(SQL_DELETE_ENTRIES_WATCH_DATABASE);
-                db.execSQL(SQL_DELETE_ENTRIES_WATCH_DEVICE_ID);
-                onCreate(db);
-            }
+             public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                 // This database is only a cache for online data, so its upgrade policy is
+                 // to simply to discard the data and start over
+                 db.execSQL(SQL_DELETE_ENTRIES_WATCH_DATABASE);
+                 db.execSQL(SQL_DELETE_ENTRIES_WATCH_DEVICE_ID);
+                 onCreate(db);
+             }
 
-            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-                onUpgrade(db, oldVersion, newVersion);
-            }
+             public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                 onUpgrade(db, oldVersion, newVersion);
+             }
 
-            public boolean WriteValuesToDatabase(String HeartRate,String StepCount,long timestamp)
-            {
-                float iHeartRate = Float.parseFloat(HeartRate);
-                float iStepCount = Float.parseFloat(StepCount);
-                //Check if the date entry for the device is already in the table
-                if( true == EntryAlreadyExist(timestamp))
-                {
-                    UpdateTableWithNewValues(iHeartRate,iStepCount,timestamp);
-                    //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
-                    return true;
-                }
-                else
-                {
-                    //Add new row in the table
-                    // Gets the data repository in write mode
+             public boolean WriteValuesToDatabase(String HeartRate, String StepCount, long timestamp) {
+                 float iHeartRate = Float.parseFloat(HeartRate);
+                 float iStepCount = Float.parseFloat(StepCount);
+                 //Check if the date entry for the device is already in the table
+                 if (true == EntryAlreadyExist(timestamp)) {
+                     UpdateTableWithNewValues(iHeartRate, iStepCount, timestamp);
+                     //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
+                     return true;
+                 } else {
+                     //Add new row in the table
+                     // Gets the data repository in write mode
 
-                    SQLiteDatabase db = this.getWritableDatabase();
-                    double Calories = CalculateCaloriesFromHeartRateAndTime(iHeartRate);
-                    Date date = new Date();
-                    String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", date.getTime())).toString();
-                    // Create a new map of values, where column names are the keys
-                    ContentValues values = new ContentValues();
-                    values.put(COLUMN_NAME_HBPM, HeartRate);
-                    values.put(COLUMN_NAME_STEPS, StepCount);
-                    values.put(COLUMN_NAME_CALORIES,Calories);
-                    values.put(COLUMN_NAME_TIMESTAMP,timestamp);
-                    // Insert the new row, returning the primary key value of the new row
-                    long newRowId;
-                    newRowId = db.insert(
-                            TABLE_NAME_WATCH_DATABASE,
-                            null,
-                            values);
-                    if (newRowId == -1)
-                        return false;
-                    else
-                        return true;
-                }
-            }
-             public boolean EntryAlreadyExist(long timestamp)
-             {
+                     SQLiteDatabase db = this.getWritableDatabase();
+                     double Calories = CalculateCaloriesFromHeartRateAndTime(iHeartRate);
+                     ContentValues values = new ContentValues();
+                     values.put(COLUMN_NAME_HBPM, HeartRate);
+                     values.put(COLUMN_NAME_STEPS, StepCount);
+                     values.put(COLUMN_NAME_CALORIES, Calories);
+                     values.put(COLUMN_NAME_TIMESTAMP, timestamp);
+                     // Insert the new row, returning the primary key value of the new row
+                     long newRowId;
+                     newRowId = db.insert(
+                             TABLE_NAME_WATCH_DATABASE,
+                             null,
+                             values);
+                     if (newRowId == -1)
+                         return false;
+                     else
+                         return true;
+                 }
+             }
+
+             public boolean EntryAlreadyExist(long timestamp) {
                  Date today = new Date();
                  today.setHours(0);
                  today.setMinutes(0);
                  today.setSeconds(0);
                  //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
-                 long millisecond =  today.getTime();
+                 long millisecond = today.getTime();
                  // String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", todayDate.getTime())).toString();
                  SQLiteDatabase db = this.getWritableDatabase();
                  //if an entry exists that has value greater 00:00 today means an entry for today exist
-                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " where " + COLUMN_NAME_TIMESTAMP + " > '" + millisecond +"'" ;
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " where " + COLUMN_NAME_TIMESTAMP + " > '" + millisecond + "'";
                  Cursor res = db.rawQuery(Query, null);
-                 if(res != null)
-                 {
-                     if (res.moveToFirst() && res.getCount() > 0)
-                     {
-                        return true;
+                 if (res != null) {
+                     if (res.moveToFirst() && res.getCount() > 0) {
+                         return true;
                      }
                  }
                  return false;
              }
-             public boolean UpdateTableWithNewValues( float HeartRate, float StepCount, long time)
-             {
+
+             public boolean UpdateTableWithNewValues(float HeartRate, float StepCount, long time) {
                  Date today = new Date();
                  today.setHours(0);
                  today.setMinutes(0);
                  today.setSeconds(0);
                  //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
-                 long millisecond =  today.getTime();
+                 long millisecond = today.getTime();
                  //String sTodayDate = df.format(todayDate);
                  SQLiteDatabase db = this.getWritableDatabase();
                  ContentValues con = new ContentValues();
                  con.put(FeedEntry.COLUMN_NAME_STEPS, StepCount);
                  con.put(FeedEntry.COLUMN_NAME_HBPM, HeartRate);
-                 con.put(FeedEntry.COLUMN_NAME_TIMESTAMP, time );
+                 con.put(FeedEntry.COLUMN_NAME_TIMESTAMP, time);
                  db.update(FeedEntry.TABLE_NAME_WATCH_DATABASE, con,
-                          FeedEntry.COLUMN_NAME_TIMESTAMP+">?" ,
+                         FeedEntry.COLUMN_NAME_TIMESTAMP + ">?",
                          new String[]{Long.toString(millisecond)});
 
                  return true;
              }
-             public double CalculateCaloriesFromHeartRateAndTime(float HeartRate)
-             {
+
+             public double CalculateCaloriesFromHeartRateAndTime(float HeartRate) {
                  double calories = 0.0f;
                  return calories;
              }
-             public  Cursor getValuesFromWatchDatabase()
-             {
-                  Cursor res = null;
+
+             public Cursor getValuesFromWatchDatabase() {
+                 Cursor res = null;
                  return res;
              }
-             public String getDeviceId()
-             {
+
+             public String getDeviceId() {
                  SQLiteDatabase db = this.getWritableDatabase();
                  String DeviceId = "";
                  //if an entry exists that has value greater 00:00 today means an entry for today exist
                  String Query = "Select * from " + TABLE_NAME_WATCH_DEVICEID;
                  Cursor res = db.rawQuery(Query, null);
-                 if(res != null)
-                 {
-                     if (res.moveToFirst() && res.getCount() > 0)
-                     {
-                        DeviceId = res.getString(0);
+                 if (res != null) {
+                     if (res.moveToFirst() && res.getCount() > 0) {
+                         DeviceId = res.getString(0);
                      }
                  }
                  return DeviceId;
              }
 
-             public boolean StoreDeviceIdToDatabase(String devideId)
-             {
+             public boolean StoreDeviceIdToDatabase(String devideId) {
                  SQLiteDatabase db = this.getWritableDatabase();
                  ContentValues values = new ContentValues();
                  values.put(COLUMN_NAME_DEVICEID, devideId);
@@ -212,6 +200,34 @@ public class DatabaseHandler {
                      return false;
                  else
                      return true;
+             }
+
+             public String[] getMaxValueOfColumn(String columnName) {
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 String [] TopThreeValues = new String [7];
+                 TopThreeValues[0]="0.0";
+                 TopThreeValues[1]="0.0";
+                 TopThreeValues[2]="0.0";
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY  " + columnName;
+                 Cursor res = db.rawQuery(Query, null);
+                 if (res != null) {
+                     if (res.moveToFirst() && res.getCount() > 0) {
+                         Log.i("row count", Integer.toString(res.getCount()));
+                         int count = 0;
+                         do {
+                             Float data = res.getFloat(res.getColumnIndex(columnName));
+                             if (count == 0)
+                                 TopThreeValues[0] = Float.toString(data);
+                             if (count == 1)
+                                 TopThreeValues[1] = Float.toString(data);
+                             if (count == 2)
+                                 TopThreeValues[2] = Float.toString(data);
+                             count++;
+                             // do what ever you want here
+                         } while (res.moveToNext());
+                     }
+                 }
+                 return TopThreeValues;
              }
          }
     }
