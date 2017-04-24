@@ -73,6 +73,9 @@ public class ListenerService extends WearableListenerService implements DataApi.
                     intent.putExtra("Steps",Steps);
                     intent.putExtra("HBPM",HBPM);
                     intent.putExtra("DeviceId",DeviceID);
+
+                    //TO DO
+                    /* Add Values to Database*/
                     Log.i("DeviceId Here",DeviceID);
                     intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

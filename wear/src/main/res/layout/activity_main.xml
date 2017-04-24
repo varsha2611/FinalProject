@@ -98,39 +98,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/home"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="140dp"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:background="@null"
         android:accessibilityLiveRegion="polite"
         app:layout_box="all"/>
-    <ImageButton
-        android:src="@drawable/notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/notification"
-        android:layout_marginLeft="65dp"
-        android:layout_marginTop="150dp"
-        android:background="@null"
-        app:layout_box="all"/>
-    <ImageButton
-        android:src="@drawable/trophy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="150dp"
-        android:background="@null"
-        android:id="@+id/leaderboard"
-        app:layout_box="all" />
+
     <ImageButton
         android:src="@drawable/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="140dp"
         android:background="@null"
         android:id="@+id/info"
         app:layout_box="all"/>
+
+    <ImageButton
+        android:id="@+id/leaderboard"
+        android:layout_width="61dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="140dp"
+        android:background="@null"
+        android:src="@drawable/trophy"
+        app:layout_box="all" />
 
 </android.support.wearable.view.BoxInsetLayout>

@@ -1,9 +1,12 @@
 package com.varshachauhan.myfitnesstracker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -12,14 +15,36 @@ import java.util.Locale;
 
 public class ShowMyAchievements extends WearableActivity {
     DatabaseHandler.FeedEntry.FeedReaderDbHelper mDBHandler;
+    private ImageButton mHome;
+    private ImageButton mInfo;
+    private BoxInsetLayout mContainerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_my_achievements);
+        mHome = (ImageButton)findViewById(R.id.home);
+        mInfo = (ImageButton)findViewById(R.id.info);
         setAmbientEnabled();
+        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
+        mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         mDBHandler = new DatabaseHandler.FeedEntry.FeedReaderDbHelper(this);
         SetValuesForTextView();
+        mHome.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent i = new Intent(ShowMyAchievements.this, MainActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+        mInfo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(ShowMyAchievements.this, InfoActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
     }
 
     @Override
