@@ -47,6 +47,10 @@ public class getData extends AsyncTask<String, Void, String> {
             return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/getUserDevices.php?user=" + userName + "&pass=" + passWord;
         if(requestType.equals("validateLogin"))
             return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/validateLogin.php?Username=" + userName + "&password=" + passWord;
+        if(requestType.equals("checkUser"))
+            return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/checkUser.php?user=" + userName;
+        if(requestType.equals("addUser"))
+            return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/addUser.php?name=" + userName + "&pass=" + passWord;
         return "";
     }
 

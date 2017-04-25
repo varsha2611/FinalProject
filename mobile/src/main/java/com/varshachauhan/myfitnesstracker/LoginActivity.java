@@ -45,33 +45,35 @@ public class LoginActivity extends Activity {
         return true;
     }
 
-    private boolean register(String userName, String passWord){
+    private boolean register(String userName, String passWord) throws ExecutionException, InterruptedException {
         //check if username is valid
-        //register account
-        return true;
-    }
-
-
-    /*public void pullUserDevices(){
-        new getData(user, pass);
-        try{
-            JSONArray array = new JSONArray(getData);
-            for(int i = 0; i < array.length(); i++){
-                JSONObject object = array.getJSONObject(i);
-                String watch = object.getString("DeviceId");
-                if(!checkRow("watches", "deviceId", watch)){
-                    db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
+        new getData(userName, "", "checkUser");
+        try {
+            if(Database.getData.equals("AVAILABLE\n")){
+                //actually register an account
+                new getData(userName, passWord, "addUser");
+                try{
+                    if(Database.getData.equals("SUCCESS\n")){
+                        toast("\"" + userName + "\" registered");
+                        return true;
+                    }
+                } catch (Exception e){
+                    toast("Error registering account");
                 }
+            } else if(Database.getData.equals("TAKEN\n")) {
+                toast("Sorry, \"" + userName + "\" is already taken");
+            } else {
+                toast("Problem checking username availability");
             }
-            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
-            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
-        } catch (Exception e){}
-    } */
+        } catch (Exception e){
+            toast("Error contacting server");
+        }
+        return false;
+    }
 
     private boolean login(String userName, String passWord) throws ExecutionException, InterruptedException {
         new getData(userName, passWord, "validateLogin");
         try {
-            //Thread.sleep(10000);
             String tester = "Login Successful\n";
             if(Database.getData.equals(tester)){
                 Database.getData = "";
@@ -143,19 +145,29 @@ public class LoginActivity extends Activity {
                registerDialog.setPositiveButton("REGISTER", new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int which) {
                        if (!age.getText().toString().equals("") && !weight.getText().toString().equals("")) {
-                           String user = userName.getText().toString();
-                           String pass = passWord.getText().toString();
-                           Integer uAge = Integer.parseInt(age.getText().toString());
-                           Integer uWeight = Integer.parseInt(weight.getText().toString());
-                           if (verifyChoice(user, pass)) {
-                               if (register(user, pass)) {
-                                   toast("Welcome " + user + " <" + uAge + "/" + uWeight + ">");
-                                   startMain(myContext);
+                           if(passWord.getText().toString().equals(password.getText().toString())) {
+                               String user = userName.getText().toString();
+                               String pass = passWord.getText().toString();
+                               Integer uAge = Integer.parseInt(age.getText().toString());
+                               Integer uWeight = Integer.parseInt(weight.getText().toString());
+                               if (verifyChoice(user, pass)) {
+                                   try {
+                                       if (register(user, pass)) {
+                                           toast("Welcome " + user + " <" + uAge + "/" + uWeight + ">");
+                                           startMain(myContext);
+                                       } else {
+                                           toast("Could not register account");
+                                       }
+                                   } catch (ExecutionException e) {
+                                       e.printStackTrace();
+                                   } catch (InterruptedException e) {
+                                       e.printStackTrace();
+                                   }
                                } else {
-                                   toast("Could not register account");
+                                   toast("username cannot be empty");
                                }
                            } else {
-                               toast("username and password cannot be empty");
+                               toast("password doesn't match");
                            }
                        } else {
                            toast("age and weight are needed to calculate calories");
