@@ -12,21 +12,30 @@
         android:id="@+id/loginImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_above="@+id/loginSplashInfo"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/login_image"
+        android:src="@mipmap/login_image"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/loginSplashInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/loginSplashInfo2"
+        android:text="Alexander Sferrella, Varsha Chauhan"
+        android:textAlignment="center"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/loginSplashInfo2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/accessThing"
-        android:text="This is where we have things"
+        android:text="CPSC 4820 / 6820 -- Android App Development"
         android:textAlignment="center"
         tools:ignore="HardcodedText" />
 

@@ -63,19 +63,25 @@ public class LoginActivity extends Activity {
                LinearLayout registerBody = new LinearLayout(myContext);
                registerBody.setOrientation(LinearLayout.VERTICAL);
 
+               final EditText userName = new EditText(myContext);
+               userName.setHint("username");
+               userName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+               userName.setGravity(Gravity.CENTER);
+               registerBody.addView(userName);
+
                LinearLayout registerMini = new LinearLayout(myContext);
                registerMini.setOrientation(LinearLayout.HORIZONTAL);
                final EditText age = new EditText(myContext);
                age.setHint("age");
                age.setInputType(InputType.TYPE_CLASS_NUMBER);
                age.setGravity(Gravity.CENTER);
-               age.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
+               age.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
                registerMini.addView(age);
-               final EditText userName = new EditText(myContext);
-               userName.setHint("username");
-               userName.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
-               userName.setGravity(Gravity.CENTER);
-               registerMini.addView(userName);
+               final EditText password = new EditText(myContext);
+               password.setHint("password");
+               password.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f));
+               password.setGravity(Gravity.CENTER);
+               registerMini.addView(password);
                registerBody.addView(registerMini);
 
                LinearLayout registerMoni = new LinearLayout(myContext);
@@ -84,13 +90,13 @@ public class LoginActivity extends Activity {
                weight.setInputType(InputType.TYPE_CLASS_NUMBER);
                weight.setHint("weight");
                weight.setGravity(Gravity.CENTER);
-               weight.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
+               weight.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
                registerMoni.addView(weight);
                final EditText passWord = new EditText(myContext);
-               passWord.setHint("password");
+               passWord.setHint("re-enter password");
                passWord.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                //passWord.setTransformationMethod(new PasswordTransformationMethod());
-               passWord.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0.3f));
+               passWord.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 0.7f));
                passWord.setGravity(Gravity.CENTER);
                registerMoni.addView(passWord);
                registerBody.addView(registerMoni);
