@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Alex on 4/12/2017.
@@ -26,13 +27,14 @@ public class getData extends AsyncTask<String, Void, String> {
     private String passWord;
     private String requestType;
 
-    public getData (String user, String pass, String type){
+    public getData (String user, String pass, String type) throws ExecutionException, InterruptedException {
         Log.i("getData", "starting getData");
         userName = user;
         passWord = pass;
         requestType = type;
         Log.i("getData", "\"" + userName + "\"\t\"" + passWord + "\"\t\"" + requestType + "\"");
-        this.execute();
+        String hi = this.execute().get();
+        Log.i("getData hi", hi);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class getData extends AsyncTask<String, Void, String> {
                 if(inputStream != null) inputStream.close();
             } catch (Exception squish){}
         }
-        Log.i("getData", result);
+        Database.getData = result;
         return result;
     }
 

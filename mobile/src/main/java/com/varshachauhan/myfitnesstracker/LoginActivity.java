@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 
+import java.util.concurrent.ExecutionException;
+
 public class LoginActivity extends Activity {
 
     //private Database db = new Database(this.getApplicationContext());
@@ -66,25 +68,20 @@ public class LoginActivity extends Activity {
         } catch (Exception e){}
     } */
 
-    private boolean login(String userName, String passWord) {
-        Log.i("login", "starting function");
+    private boolean login(String userName, String passWord) throws ExecutionException, InterruptedException {
         new getData(userName, passWord, "validateLogin");
-        Log.i("login", "executed getData");
         try {
-            Thread.sleep(3000);
-            Log.i("getData", Database.getData);
-            if(Database.getData.equals("Login Successful")){
-                Log.i("login", "Database.getData is what is expected");
+            //Thread.sleep(10000);
+            String tester = "Login Successful\n";
+            if(Database.getData.equals(tester)){
+                Database.getData = "";
                 new Database(this).setLogin(userName, passWord);
-                Log.i("login", "username and password saved to internal database");
                 return true;
             } else {
-                Log.i("login", "Database.getData does not equal");
                 toast("Invalid login");
                 return false;
             }
         } catch (Exception e){
-            Log.i("login", "there was an exception");
             toast("Could not access server");
             return false;
         }
@@ -210,13 +207,19 @@ public class LoginActivity extends Activity {
                         String pass = password.getText().toString();
                         if(verifyChoice(user, pass)) {
                             Log.i("login", "before");
-                            if (login(user, pass)) {
-                                Log.i("login", "after");
-                                toast("welcome back " + username.getText().toString());
-                                startMain(myContext);
-                            } else {
-                                Log.i("login", "did not login");
-                                toast("error logging in");
+                            try {
+                                if (login(user, pass)) {
+                                    Log.i("login", "after");
+                                    toast("welcome back " + username.getText().toString());
+                                    startMain(myContext);
+                                } else {
+                                    Log.i("login", "did not login");
+                                    toast("error logging in");
+                                }
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                             Log.i("login", "after all");
                         } else {
