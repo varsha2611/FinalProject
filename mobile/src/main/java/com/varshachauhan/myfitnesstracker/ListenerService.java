@@ -2,6 +2,7 @@ package com.varshachauhan.myfitnesstracker;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
@@ -71,6 +72,16 @@ public class ListenerService extends WearableListenerService implements DataApi.
 
                     /* Add Values to Database*/
                     dataBase.InsertSensorDataIntoTable(Steps,HBPM,timestamp,DeviceID);
+                    Intent intent = new Intent( this, AddDevice.class );
+                    intent.putExtra("DeviceId",DeviceID);
+                    intent.putExtra("type","Upload");
+                    intent.putExtra("Steps",Float.toString(Steps));
+                    intent.putExtra("HBPM", Float.toString(HBPM));
+                    intent.putExtra("TimeStamp",Long.toString(timestamp));
+                    intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+                    startActivity( intent );
+
+
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted

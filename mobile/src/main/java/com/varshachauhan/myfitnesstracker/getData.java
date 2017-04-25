@@ -9,7 +9,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,7 +38,6 @@ public class getData extends AsyncTask<String, Void, String> {
         String hi = this.execute().get();
         Log.i("getData hi", hi);
     }
-
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -47,7 +48,7 @@ public class getData extends AsyncTask<String, Void, String> {
             return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/getUserDevices.php?user=" + userName + "&pass=" + passWord;
         if(requestType.equals("validateLogin"))
             return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/validateLogin.php?Username=" + userName + "&password=" + passWord;
-        return "";
+         return "";
     }
 
     @Override

@@ -53,6 +53,10 @@
             android:name=".AddDevice"
             android:label="MyFitnessTracker"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SyncActivity"
+            android:label="MyFitnessTracker"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -115,13 +115,15 @@ public class Database extends SQLiteOpenHelper{
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
-    public void AddUserToExternalDatabase(String url, String DeviceId, String Devicename) {
+    public void AddDataToExternalDatabase(String DeviceID, float Steps, float HBPM, long timestamp, String URL){
         // Building Parameters
         JSONParser jsonParser = new JSONParser();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("DeviceId", DeviceId ));
-            params.add(new BasicNameValuePair("DeviceName", Devicename));
-            JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
+            params.add(new BasicNameValuePair("DeviceId", DeviceID ));
+            params.add(new BasicNameValuePair("Steps", Float.toString(Steps)));
+            params.add(new BasicNameValuePair("HBPM", Float.toString(HBPM)));
+            params.add(new BasicNameValuePair("timestamp", Long.toString(timestamp)));
+            JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
     }
 
 
@@ -201,4 +203,21 @@ public class Database extends SQLiteOpenHelper{
         }
         return false;
     }
+   public boolean ValueInInternalDatabase(String deviceId, Long TimeStamp)
+   {
+       SQLiteDatabase db = this.getWritableDatabase();
+       //if an entry exists that has value greater 00:00 today means an entry for today exist
+       String Query = "Select * from datagrams where sent_time >  \"" + TimeStamp + "\" AND deviceId = \""
+               + deviceId + "\"" ;
+       Log.i("Query",Query);
+       Cursor res = db.rawQuery(Query, null);
+       if (res != null) {
+           if (res.moveToFirst() && res.getCount() > 0) {
+               Log.i("No of rows",Integer.toString(res.getCount()));
+               return true;
+           }
+       }
+       return false;
+   }
+
 }
