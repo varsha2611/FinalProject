@@ -113,16 +113,20 @@ public class MainActivity extends AppCompatActivity
         exampleRow.setLayoutParams(lp);
         TextView device = new TextView(myContext);
         device.setText("1234");
+        device.setTextSize(20);
         device.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(device);
         TextView steps = new TextView(myContext);
         steps.setText("5678");
+        steps.setTextSize(20);
         steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(steps);
         TextView calories = new TextView(myContext);
         calories.setText("9010");
+        calories.setTextSize(20);
         steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
         exampleRow.addView(calories);
+        exampleRow.setPadding(100, 30, 100, 0);
         leaderBoard.addView(exampleRow);
     }
 

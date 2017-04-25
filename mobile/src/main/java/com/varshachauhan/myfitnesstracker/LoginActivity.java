@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 public class LoginActivity extends Activity {
+
+    //private Database db = new Database(this.getApplicationContext());
 
     public void toast(String message) {
         Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -44,9 +49,43 @@ public class LoginActivity extends Activity {
         return true;
     }
 
+
+    /*public void pullUserDevices(){
+        new getData(user, pass);
+        try{
+            JSONArray array = new JSONArray(getData);
+            for(int i = 0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                String watch = object.getString("DeviceId");
+                if(!checkRow("watches", "deviceId", watch)){
+                    db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
+                }
+            }
+            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
+            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
+        } catch (Exception e){}
+    } */
+
     private boolean login(String userName, String passWord) {
-        //check if the username and password are legit
-        return true;
+        Log.i("login", "starting function");
+        new getData(userName, passWord, "validateLogin");
+        Log.i("login", "executed getData");
+        try {
+            if(Database.getData.equals("Login Successful")){
+                Log.i("login", "Database.getData is what is expected");
+                new Database(this).setLogin(userName, passWord);
+                Log.i("login", "username and password saved to internal database");
+                return true;
+            } else {
+                Log.i("login", "Database.getData does not equal");
+                toast("Invalid login");
+                return false;
+            }
+        } catch (Exception e){
+            Log.i("login", "there was an exception");
+            toast("Could not access server");
+            return false;
+        }
     }
 
     private void registerAccount(final Context myContext){
@@ -168,12 +207,16 @@ public class LoginActivity extends Activity {
                         String user = username.getText().toString();
                         String pass = password.getText().toString();
                         if(verifyChoice(user, pass)) {
+                            Log.i("login", "before");
                             if (login(user, pass)) {
+                                Log.i("login", "after");
                                 toast("welcome back " + username.getText().toString());
                                 startMain(myContext);
                             } else {
+                                Log.i("login", "did not login");
                                 toast("error logging in");
                             }
+                            Log.i("login", "after all");
                         } else {
                             toast("username and password cannot be empty");
                         }
@@ -193,6 +236,11 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context myContext = LoginActivity.this;
+        Log.i("test", "test");
+        /*if(Database.isLoggedIn()){
+            startMain(myContext);
+        }*/
+        Log.i("test", "test2");
         setContentView(R.layout.activity_login);
         registerAccount(myContext);
         accountLogin(myContext);

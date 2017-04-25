@@ -18,6 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -26,9 +27,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_weight="1"
-                android:text="Device Name"
+                android:text="Device"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -38,9 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Steps/day"
+                android:text="Steps"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -50,9 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_weight="1"
-                android:text="Calories/Day"
+                android:text="Calories"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="30sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText,RtlHardcoded" />
         </LinearLayout>
@@ -61,8 +62,8 @@
             android:id="@+id/leaderBoard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             tools:ignore="InefficientWeight,UselessLeaf">
 
