@@ -27,20 +27,17 @@
         <activity
             android:name=".MainActivity"
             android:label="MyHealthTracker"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".LoginActivity"
+            android:label="MyHealthTracker">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
         <activity android:name=".SendNotification" />
-
         <service android:name=".ListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
@@ -52,7 +49,6 @@
                     android:scheme="wear" />
             </intent-filter>
         </service>
-
         <activity
             android:name=".AddDevice"
             android:label="MyHealthTracker"

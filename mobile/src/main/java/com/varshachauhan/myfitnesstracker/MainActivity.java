@@ -254,6 +254,18 @@ public class MainActivity extends AppCompatActivity
             Steps = Float.parseFloat(steps);
         generateRecentData(myContext);
 
+
+        //testing for login stuff
+        ImageButton loginButton = (ImageButton) findViewById(R.id.loadSideViewButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                //toast("test");
+            }
+        });
+
+
+
         //Achievement Button
         ImageButton achievementButton = (ImageButton) findViewById(R.id.achievementButton);
         achievementButton.setOnClickListener(new View.OnClickListener() {
