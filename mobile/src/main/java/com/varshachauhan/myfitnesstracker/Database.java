@@ -28,23 +28,44 @@ import java.util.List;
 
 
 public class Database extends SQLiteOpenHelper{
-    private SQLiteDatabase db;
-    public static String getData = ""; //there has to be a better way of getting things out of getData
+    private static SQLiteDatabase db;
+    public static String getData = "asdf"; //there has to be a better way of getting things out of getData
     Database(Context context){
         super(context, "mobileDatabase", null, 2);
         db = this.getWritableDatabase();
     }
-
-    private String user = "Alex";
-    private String pass = "pass";
+    public static Cursor select(String querry){ return db.rawQuery(querry, null); }
+    public void exec(String querry){ db.execSQL(querry); }
 
     public void setLogin(String userName, String passWord){
-        user = userName;
-        pass = passWord;
+        db.execSQL("update login set username = \"" + userName + "\" where asdf = '1'");
+        db.execSQL("update login set password = \"" + passWord + "\" where asdf = '1'");
     }
 
+    public static boolean isLoggedIn(){
+        String Query = "select username, password from login where asdf = '1'" ;
+        Cursor c = select(Query);
+        if (c.getCount() <= 0) {
+            c.close();
+            Log.i("login", "something weird went wrong");
+            return false;
+        } else {
+            if(!c.getString(0).equals("") && !c.getString(1).equals("")){
+                c.close();
+                return true;
+            } else {
+                c.close();
+                return false;
+            }
+        }
+    }
 
-    public void pullUserDevices(){
+    public void logOut(){
+        db.execSQL("update login set username = \"\" where asdf = '1'");
+        db.execSQL("update login set password = \"\" where asdf = '1'");
+    }
+
+    /*public void pullUserDevices(){
         new getData(user, pass);
         try{
             JSONArray array = new JSONArray(getData);
@@ -58,7 +79,7 @@ public class Database extends SQLiteOpenHelper{
             //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
             //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
         } catch (Exception e){}
-    }
+    } */
 
     //check if there is a row with a certain value
     public boolean checkRow(String table, String column, String value){
@@ -74,31 +95,14 @@ public class Database extends SQLiteOpenHelper{
         }
     }
 
-    public Cursor select(String querry){
-        return db.rawQuery(querry, null);
-    }
 
-    public void exec(String querry){
-        db.execSQL(querry);
-    }
-
-    public void receiveDatagram(Integer watch_id, String timestamp, Integer hbpm, Integer steps, Integer calories, Integer sleep){
-        if(checkRow("datagrams", "deviceId", Integer.toString(watch_id))){
-            if(!timestamp.equals("")){
-                String messageStart = "insert into datagrams (";
-                String messageEnd = ") values (";
-                if(hbpm > 0) {
-                    messageStart += "hbpm";
-                    messageEnd += Integer.toString(hbpm);
-                }
-            }
-        }
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table watches( deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)");
         db.execSQL("create table datagrams(deleted bool default false, deviceId text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");
+        db.execSQL("create table login(asdf integer, username text, password text)");
+        db.execSQL("insert into login (asdf, username, password) values (1, \"\", \"\")");
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
@@ -111,16 +115,19 @@ public class Database extends SQLiteOpenHelper{
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
-    public void AddUserToExternalDatabase(String url, String DeviceId, String Devicename)
-    {
+    public void AddUserToExternalDatabase(String url, String DeviceId, String Devicename) {
         // Building Parameters
         JSONParser jsonParser = new JSONParser();
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("DeviceId", DeviceId ));
             params.add(new BasicNameValuePair("DeviceName", Devicename));
-            JSONObject json = jsonParser.makeHttpRequest(url,
-                    "POST", params);
+            JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
     }
+
+
+
+
+
     public boolean InsertSensorDataIntoTable(float HeartRate, float StepCount, long time, String DeviceId)
     {
         if (true == EntryAlreadyExist(DeviceId)) {
@@ -131,7 +138,7 @@ public class Database extends SQLiteOpenHelper{
             //Add new row in the table
             // Gets the data repository in write mode
 
-            SQLiteDatabase db = this.getWritableDatabase();
+            //SQLiteDatabase db = this.getWritableDatabase();
             ContentValues con = new ContentValues();
             con.put("deviceId", DeviceId);
             con.put("hbpm", HeartRate);
@@ -157,7 +164,7 @@ public class Database extends SQLiteOpenHelper{
         today.setMinutes(0);
         today.setSeconds(0);
         long millisecond = today.getTime();
-        SQLiteDatabase db = this.getWritableDatabase();
+        //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues con = new ContentValues();
         con.put("deviceId", DeviceId);
         con.put("hbpm", HeartRate);

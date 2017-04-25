@@ -1,6 +1,8 @@
 package com.varshachauhan.myfitnesstracker;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -22,10 +24,12 @@ import java.util.List;
 public class getData extends AsyncTask<String, Void, String> {
     private String userName;
     private String passWord;
+    private String requestType;
 
-    public getData (String user, String pass){
+    public getData (String user, String pass, String type){
         userName = user;
         passWord = pass;
+        requestType = type;
         this.execute();
     }
 
@@ -34,13 +38,21 @@ public class getData extends AsyncTask<String, Void, String> {
         super.onPreExecute();
     }
 
+    private String getURL(){
+        if(requestType.equals("getUserDevices"))
+            return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/getUserDevices.php?user=" + userName + "&pass=" + passWord;
+        if(requestType.equals("validateLogin"))
+            return "https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/validateLogin.php?Username=" + userName + "&password=" + passWord;
+        return "";
+    }
+
     @Override
     protected String doInBackground(String... params){
         DefaultHttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
-        HttpPost httppost = new HttpPost("https://people.cs.clemson.edu/~asferre/cpsc4820/Assignment4/getUserDevices.php?user=" + userName + "&pass=" + passWord);
+        HttpPost httppost = new HttpPost(getURL());
         List<NameValuePair> myParams = new ArrayList<NameValuePair>();
         InputStream inputStream = null;
-        String result = null;
+        String result = "";
         try{
             httppost.setEntity(new UrlEncodedFormEntity(myParams));
             HttpResponse response = httpClient.execute(httppost);
@@ -59,6 +71,7 @@ public class getData extends AsyncTask<String, Void, String> {
                 if(inputStream != null) inputStream.close();
             } catch (Exception squish){}
         }
+        Log.i("getData", result);
         return result;
     }
 
