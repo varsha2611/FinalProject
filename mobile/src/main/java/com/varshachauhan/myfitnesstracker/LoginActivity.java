@@ -71,6 +71,8 @@ public class LoginActivity extends Activity {
         new getData(userName, passWord, "validateLogin");
         Log.i("login", "executed getData");
         try {
+            Thread.sleep(3000);
+            Log.i("getData", Database.getData);
             if(Database.getData.equals("Login Successful")){
                 Log.i("login", "Database.getData is what is expected");
                 new Database(this).setLogin(userName, passWord);

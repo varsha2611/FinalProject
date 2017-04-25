@@ -27,9 +27,11 @@ public class getData extends AsyncTask<String, Void, String> {
     private String requestType;
 
     public getData (String user, String pass, String type){
+        Log.i("getData", "starting getData");
         userName = user;
         passWord = pass;
         requestType = type;
+        Log.i("getData", "\"" + userName + "\"\t\"" + passWord + "\"\t\"" + requestType + "\"");
         this.execute();
     }
 
