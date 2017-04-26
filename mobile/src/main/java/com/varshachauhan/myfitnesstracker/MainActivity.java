@@ -10,8 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -52,6 +56,39 @@ public class MainActivity extends AppCompatActivity
 
     private void toast(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void sideMenu(View v){
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.test, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
+            public boolean onMenuItemClick(MenuItem item){
+                int id = item.getItemId();
+                if(id == R.id.logout){
+                    toast("Logging Out");
+                    dataBase.logOut();
+                    Intent out = new Intent(MainActivity.this, LoginActivity.class);
+                    finish();
+                    startActivity(out);
+                }
+                if(id == R.id.sync){
+                    toast("Data Synced");
+                    startActivity(new Intent(MainActivity.this, SyncActivity.class));
+                }
+                if(id == R.id.about){
+                    final AlertDialog.Builder aboutInfo = new AlertDialog.Builder(MainActivity.this);
+                    aboutInfo.setTitle("About This App");
+                    final TextView body = new TextView(MainActivity.this);
+                    body.setText("This is where we put about info");
+                    aboutInfo.setView(body);
+                    aboutInfo.create();
+                    aboutInfo.show();
+                }
+                return true;
+            }
+        });
+        popup.show();
     }
 
     private void generateRecentData(final Context myContext) {
@@ -156,7 +193,6 @@ public class MainActivity extends AppCompatActivity
      *    Generate the device table
      *    Add a new device
      */
-    //Generate the device table
     private void generateDeviceTable(final Context myContext) {
         TableLayout deviceTable = (TableLayout) findViewById(R.id.deviceTable);
         deviceTable.removeAllViews();
@@ -260,7 +296,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i);
                 finish();
             }
-
         });
     }
 
@@ -284,9 +319,7 @@ public class MainActivity extends AppCompatActivity
         ImageButton loginButton = (ImageButton) findViewById(R.id.upload);
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this, SyncActivity.class));
-                //toast("test");
+                sideMenu(v);
             }
         });
 

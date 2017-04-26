@@ -40,6 +40,8 @@ public class Database extends SQLiteOpenHelper{
     public void setLogin(String userName, String passWord){
         db.execSQL("update login set username = \"" + userName + "\" where asdf = '1'");
         db.execSQL("update login set password = \"" + passWord + "\" where asdf = '1'");
+        if(isLoggedIn())
+            Log.i("login test", "you are logged in");
     }
 
     public static boolean isLoggedIn(){
@@ -47,7 +49,10 @@ public class Database extends SQLiteOpenHelper{
         Cursor res = db.rawQuery(Query, null);
         if (res != null) {
             if (res.moveToFirst() && res.getCount() > 0) {
-                return true;
+                //Log.i("login", "username: " + res.getString(0));
+                //Log.i("login", "password: " + res.getString(1));
+                if(!res.getString(0).equals("") && !res.getString(1).equals(""))
+                    return true;
             } else {
                 Log.i("login", "there's some weird kind of error going on");
             }
