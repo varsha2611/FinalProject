@@ -36,6 +36,7 @@ public class SendNotification extends Activity  implements MessageApi.MessageLis
         setContentView(R.layout.activity_main);
         user = getIntent().getStringExtra("user");
         nodeId = getIntent().getStringExtra("NodeId");
+        Log.i("SendNotification","Sending message");
         if(user != null)
         Log.i("user value",user);
         if(nodeId != null)

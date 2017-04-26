@@ -177,7 +177,7 @@ public class DatabaseHandler {
              public float CalculateCaloriesFromHeartRateAndTime(float HeartRate) {
                  float calories = 0.0f;
                  calories =  getLastValue(FeedEntry.COLUMN_NAME_CALORIES) +
-                         ( (( - 55.0969f + (0.6309f * HeartRate) + (0.1988f *50) + (0.2017f *30))/4.184f)*(1.666668f))/100000;
+                         ( (( -20.4022f + (0.4472f * HeartRate) - (0.1236f *50) + (0.074f *26))/4.184f)*(1.666668f))/100000;
                  return calories;
              }
 
@@ -252,11 +252,9 @@ public class DatabaseHandler {
                  Cursor res = db.rawQuery(Query, null);
                  if (res != null) {
                      if (res.moveToFirst() && res.getCount() > 0) {
-                         Log.i("row count", Integer.toString(res.getCount()));
                          int count = 0;
                          do {
                              Float data = res.getFloat(res.getColumnIndex(columnName));
-                             Log.i("steps max",Float.toString(data));
                              if (count == 0)
                                  TopThreeValues[0] = Float.toString(data);
                              if (count == 1)

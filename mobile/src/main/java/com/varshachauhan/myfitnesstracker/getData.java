@@ -119,6 +119,7 @@ public class getData extends AsyncTask<String, Void, String> {
         today.setSeconds(0);
         //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
         long millisecond = today.getTime();
+        Log.i("todayat12",Long.toString(millisecond));
         Log.i("AddDataToExtDatabase",Long.toString(timestamp));
         JSONParser jsonParser = new JSONParser();
         List<NameValuePair> params = new ArrayList<NameValuePair>();

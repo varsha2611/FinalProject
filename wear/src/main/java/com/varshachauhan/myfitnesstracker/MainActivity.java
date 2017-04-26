@@ -70,7 +70,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private static final String WEAR_NODEID_PATH ="/nodeId";
     private GoogleApiClient mApiClient;
     private Context context = this;
-
+    int delay =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,15 +128,11 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         Date date = new Date();
         String currentDate  = (DateFormat.format("MMM dd HH:mm:ss", date.getTime())).toString();
-        /*mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
+        mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         mStepsView.setTextColor(getResources().getColor(android.R.color.black));
         mHBPMView.setTextColor(getResources().getColor(android.R.color.black));
-        mCalories.setTextColor(getResources().getColor(android.R.color.black));*/
+        mCalories.setTextColor(getResources().getColor(android.R.color.black));
         mDate.setText(currentDate);
-        mStepsView.setText(sStepCount);
-        mHBPMView.setText(sHeartRate);
-        mCalories.setText(sCalories);
-        mSleepHrs.setText(sSleepHours);
     }
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -155,6 +151,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             sensorTimeReference = event.timestamp;
             myTimeReference = System.currentTimeMillis();
         }
+        delay++;
 
         // set event timestamp to current time in milliseconds
         SensorTimeStamp = myTimeReference +
@@ -178,15 +175,23 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             String sEvent = event.toString();
             MotionDetect=event.values[0];
             if((MotionDetect < 0)&&(MotionDetect>-1))
-            sSleepHours = sSleepHours+1/1000000;
+            sSleepHours = sSleepHours+1/100000;
         }
-        mDBHandler.WriteValuesToDatabase(sHeartRate,sStepCount,SensorTimeStamp,sSleepHours);
-        String [] SensorData;
-        SensorData = mDBHandler.getSensorDataFromDatabase();
-        sStepCount = SensorData[0];
-        sHeartRate = SensorData[1];
-        sCalories = SensorData[2];
-        sSleepHours = SensorData[3];
+        if(delay >50)
+        {
+            mDBHandler.WriteValuesToDatabase(sHeartRate, sStepCount, SensorTimeStamp, sSleepHours);
+            String[] SensorData;
+            SensorData = mDBHandler.getSensorDataFromDatabase();
+            sStepCount = SensorData[0];
+            sHeartRate = SensorData[1];
+            sCalories = SensorData[2];
+            sSleepHours = SensorData[3];
+            delay=0;
+        }
+        mStepsView.setText(sStepCount);
+        mHBPMView.setText(sHeartRate);
+        mCalories.setText(sCalories);
+        mSleepHrs.setText(sSleepHours);
         updateDisplay();
     }
 
@@ -217,7 +222,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         putDataMapReq.getDataMap().putLong("Time",SensorTimeStamp);
         if(DeviceId != null)
          putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
-        //putDataMapReq.setUrgent();
+        putDataMapReq.setUrgent();
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mApiClient, putDataReq);
