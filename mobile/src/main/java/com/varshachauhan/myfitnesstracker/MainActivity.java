@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,11 +27,14 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Wearable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
 {//Helper Stuff
@@ -104,30 +108,90 @@ public class MainActivity extends AppCompatActivity
         minSleepDay.setText(minSlpDay);
     }
 
-    private void generateLeaderBoard(Context myContext) {
+    /*
+    new getData(userName, "", "checkUser");
+        try {
+            if(Database.getData.equals("AVAILABLE\n")){
+                //actually register an account
+                new getData(userName, passWord, "addUser");
+                try{
+                    if(Database.getData.equals("SUCCESS\n")){
+                        toast("\"" + userName + "\" registered");
+                        return true;
+                    }
+                } catch (Exception e){
+                    toast("Error registering account");
+                }
+            } else if(Database.getData.equals("TAKEN\n")) {
+                toast("Sorry, \"" + userName + "\" is already taken");
+            } else {
+                toast("Problem checking username availability");
+            }
+        } catch (Exception e){
+            toast("Error contacting server");
+        }
+
+    public void pullUserDevices(){
+        new getData(user, pass);
+        try{
+            JSONArray array = new JSONArray(getData);
+            for(int i = 0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                String watch = object.getString("DeviceId");
+                if(!checkRow("watches", "deviceId", watch)){
+                    db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
+                }
+            }
+            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
+            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
+        } catch (Exception e){}
+    } */
+
+    private void generateLeaderBoard(Context myContext) throws ExecutionException, InterruptedException {
         TableLayout leaderBoard = (TableLayout) findViewById(R.id.leaderBoard);
         leaderBoard.removeAllViews();
+        new getData("", "", "leaderBoard");
+        try{
+            JSONArray array = new JSONArray(Database.getData);
+            for(int i = 0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                String deviceJ = object.getString("DeviceName");
+                String stepsJ = object.getString("Steps");
+                Log.i("Leader" + i, deviceJ + "\t" + stepsJ);
 
-        TableRow exampleRow = new TableRow(myContext);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-        exampleRow.setLayoutParams(lp);
-        TextView device = new TextView(myContext);
-        device.setText("1234");
-        device.setTextSize(20);
-        device.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
-        exampleRow.addView(device);
-        TextView steps = new TextView(myContext);
-        steps.setText("5678");
-        steps.setTextSize(20);
-        steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
-        exampleRow.addView(steps);
-        TextView calories = new TextView(myContext);
-        calories.setText("9010");
-        calories.setTextSize(20);
-        steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.3f));
-        exampleRow.addView(calories);
-        exampleRow.setPadding(100, 30, 100, 0);
-        leaderBoard.addView(exampleRow);
+                TableRow exampleRow = new TableRow(myContext);
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                exampleRow.setLayoutParams(lp);
+                TextView device = new TextView(myContext);
+                device.setText(deviceJ);
+                device.setTextSize(20);
+                device.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.5f));
+                exampleRow.addView(device);
+                TextView steps = new TextView(myContext);
+                steps.setText(stepsJ);
+                steps.setTextSize(20);
+                steps.setGravity(Gravity.RIGHT);
+                steps.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 0.5f));
+                exampleRow.addView(steps);
+                exampleRow.setPadding(100, 30, 100, 0);
+                leaderBoard.addView(exampleRow);
+            }
+        } catch (Exception e){
+            TableRow connection = new TableRow(myContext);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+            connection.setLayoutParams(lp);
+            TextView message = new TextView(myContext);
+            message.setText("SERVER UNAVAILABLE");
+            message.setGravity(Gravity.CENTER);
+            connection.addView(message);
+            leaderBoard.addView(connection);
+            toast("cannot connect to server");
+        }
+
+
+
+
+
     }
 
     /* Device Menu
@@ -297,7 +361,13 @@ public class MainActivity extends AppCompatActivity
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 currentContext.setText("Leader Board");
-                generateLeaderBoard(myContext);
+                try {
+                    generateLeaderBoard(myContext);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.leaderView)));
             }
         });
