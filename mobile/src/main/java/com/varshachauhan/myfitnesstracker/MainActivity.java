@@ -6,16 +6,20 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,7 +50,7 @@ public class MainActivity extends AppCompatActivity
     float Steps=0.0f;
     private static final String WEAR_MESSAGE_PATH = "/mobile";
 
-    public void toast(String message) {
+    private void toast(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -72,9 +76,9 @@ public class MainActivity extends AppCompatActivity
         curDevices.setText(Integer.toString(devices));
     }
 
-    private void generateAchievementData(final Context myContext, final String curDev) {
+    private void generateAchievementData(final Context myContext) {
         TextView currentDevice = (TextView) findViewById(R.id.achievementTitle);
-        currentDevice.setText("Achievements for " + curDev);
+        currentDevice.setText("Personal Achievements");
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
         String currentDate = dateFormat.format(new Date());
@@ -107,45 +111,6 @@ public class MainActivity extends AppCompatActivity
         TextView minSleepDay = (TextView) findViewById(R.id.minSleepDay);
         minSleepDay.setText(minSlpDay);
     }
-
-    /*
-    new getData(userName, "", "checkUser");
-        try {
-            if(Database.getData.equals("AVAILABLE\n")){
-                //actually register an account
-                new getData(userName, passWord, "addUser");
-                try{
-                    if(Database.getData.equals("SUCCESS\n")){
-                        toast("\"" + userName + "\" registered");
-                        return true;
-                    }
-                } catch (Exception e){
-                    toast("Error registering account");
-                }
-            } else if(Database.getData.equals("TAKEN\n")) {
-                toast("Sorry, \"" + userName + "\" is already taken");
-            } else {
-                toast("Problem checking username availability");
-            }
-        } catch (Exception e){
-            toast("Error contacting server");
-        }
-
-    public void pullUserDevices(){
-        new getData(user, pass);
-        try{
-            JSONArray array = new JSONArray(getData);
-            for(int i = 0; i < array.length(); i++){
-                JSONObject object = array.getJSONObject(i);
-                String watch = object.getString("DeviceId");
-                if(!checkRow("watches", "deviceId", watch)){
-                    db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
-                }
-            }
-            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
-            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
-        } catch (Exception e){}
-    } */
 
     private void generateLeaderBoard(Context myContext) throws ExecutionException, InterruptedException {
         TableLayout leaderBoard = (TableLayout) findViewById(R.id.leaderBoard);
@@ -187,11 +152,6 @@ public class MainActivity extends AppCompatActivity
             leaderBoard.addView(connection);
             toast("cannot connect to server");
         }
-
-
-
-
-
     }
 
     /* Device Menu
@@ -322,24 +282,20 @@ public class MainActivity extends AppCompatActivity
             Steps = Float.parseFloat(steps);
         generateRecentData(myContext);
 
-
         //testing for login stuff
         ImageButton loginButton = (ImageButton) findViewById(R.id.loadSideViewButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                //toast("test");
+
             }
         });
-
-
 
         //Achievement Button
         ImageButton achievementButton = (ImageButton) findViewById(R.id.achievementButton);
         achievementButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 currentContext.setText("Personal Achievements");
-                generateAchievementData(myContext, "<Current Device>");
+                generateAchievementData(myContext);
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.achievementView)));
             }
         });
