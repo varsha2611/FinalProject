@@ -75,7 +75,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //setAmbientEnabled();
+        setAmbientEnabled();
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         mStepsView = (TextView) findViewById(R.id.nbofsteps);
@@ -128,10 +128,10 @@ public class MainActivity extends WearableActivity implements SensorEventListene
 
         Date date = new Date();
         String currentDate  = (DateFormat.format("MMM dd HH:mm:ss", date.getTime())).toString();
-        mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
+        /*mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         mStepsView.setTextColor(getResources().getColor(android.R.color.black));
         mHBPMView.setTextColor(getResources().getColor(android.R.color.black));
-        mCalories.setTextColor(getResources().getColor(android.R.color.black));
+        mCalories.setTextColor(getResources().getColor(android.R.color.black));*/
         mDate.setText(currentDate);
         mStepsView.setText(sStepCount);
         mHBPMView.setText(sHeartRate);
