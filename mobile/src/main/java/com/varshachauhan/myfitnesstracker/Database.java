@@ -44,20 +44,45 @@ public class Database extends SQLiteOpenHelper{
 
     public static boolean isLoggedIn(){
         String Query = "select username, password from login where asdf = '1'" ;
+        Cursor res = db.rawQuery(Query, null);
+        if (res != null) {
+            if (res.moveToFirst() && res.getCount() > 0) {
+                return true;
+            } else {
+                Log.i("login", "there's some weird kind of error going on");
+            }
+        } else {
+            Log.i("test", "querry is null");
+        }
+        /*Log.i("test", "reached");
         Cursor c = select(Query);
+        Log.i("test", "querry made");
         if (c.getCount() <= 0) {
             c.close();
             Log.i("login", "something weird went wrong");
             return false;
         } else {
+            Log.i("test", Integer.toString(c.getCount()));
+            try {
+                Log.i("test", c.getString(0));
+            } catch (Exception e){
+                Log.i("test", "empty querry maybe?");
+            }
+            Log.i("asdf", c.getColumnName(0));
+            //Log.i("asdf", c.getString(0));
             if(!c.getString(0).equals("") && !c.getString(1).equals("")){
+                Log.i("test", "couldn't be here");
                 c.close();
+                Log.i("test", "definitely not this");
                 return true;
             } else {
+                Log.i("test", "another weird crash");
                 c.close();
+                Log.i("test", "no way");
                 return false;
             }
-        }
+        }*/
+        return false;
     }
 
     public void logOut(){
@@ -95,8 +120,6 @@ public class Database extends SQLiteOpenHelper{
         }
     }
 
-
-
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table watches( deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)");
@@ -118,10 +141,10 @@ public class Database extends SQLiteOpenHelper{
     public void AddUserToExternalDatabase(String url, String DeviceId, String Devicename) {
         // Building Parameters
         JSONParser jsonParser = new JSONParser();
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("DeviceId", DeviceId ));
-            params.add(new BasicNameValuePair("DeviceName", Devicename));
-            JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("DeviceId", DeviceId ));
+        params.add(new BasicNameValuePair("DeviceName", Devicename));
+        JSONObject json = jsonParser.makeHttpRequest(url, "POST", params);
     }
 
 

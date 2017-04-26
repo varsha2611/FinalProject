@@ -78,6 +78,7 @@ public class LoginActivity extends Activity {
             if(Database.getData.equals(tester)){
                 Database.getData = "";
                 new Database(this).setLogin(userName, passWord);
+
                 return true;
             } else {
                 toast("Invalid login");
@@ -254,9 +255,13 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         Context myContext = LoginActivity.this;
         Log.i("test", "test");
-        /*if(Database.isLoggedIn()){
-            startMain(myContext);
-        }*/
+        try {
+            if(new Database(myContext).isLoggedIn()){
+                startMain(myContext);
+            }
+        } catch (Exception e){
+            Log.i("login", "there's still problems");
+        }
         Log.i("test", "test2");
         setContentView(R.layout.activity_login);
         registerAccount(myContext);
