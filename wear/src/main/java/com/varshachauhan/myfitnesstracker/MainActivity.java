@@ -52,6 +52,8 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private TextView mStepsView;
     private TextView mHBPMView;
     private TextView mDate;
+    private TextView mCalories;
+    private TextView mSleepHrs;
     private ImageButton mNotification;
     private ImageButton mInfo;
     private SensorManager mSensorManager;
@@ -62,6 +64,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     private String sStepCount = "0";
     private String sHeartRate = "0";
     private String sSleepHours = "0";
+    private String sCalories = "0";
     long SensorTimeStamp=0;
     private static final String WEAR_MESSAGE_PATH = "/message";
     private static final String WEAR_NODEID_PATH ="/nodeId";
@@ -72,18 +75,20 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setAmbientEnabled();
+        //setAmbientEnabled();
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         mStepsView = (TextView) findViewById(R.id.nbofsteps);
         mHBPMView = (TextView) findViewById(R.id.hbpm);
+        mSleepHrs = (TextView)findViewById(R.id.sleephrs);
         mDate = (TextView)findViewById(R.id.date);
+        mCalories =  (TextView)findViewById(R.id.nbofCalories);
         mNotification = (ImageButton)findViewById(R.id.leaderboard);
         mInfo =  (ImageButton)findViewById(R.id.info);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mStepCount = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-        mSleepHours = mSensorManager.getDefaultSensor(Sensor.TYPE_MOTION_DETECT);
+        mSleepHours = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mDBHandler = new DatabaseHandler.FeedEntry.FeedReaderDbHelper(this);
         initGoogleApiClient();
                 mNotification.setOnClickListener(new View.OnClickListener() {
@@ -126,10 +131,12 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         mContainerView.setBackgroundColor(getResources().getColor(android.R.color.white));
         mStepsView.setTextColor(getResources().getColor(android.R.color.black));
         mHBPMView.setTextColor(getResources().getColor(android.R.color.black));
+        mCalories.setTextColor(getResources().getColor(android.R.color.black));
         mDate.setText(currentDate);
         mStepsView.setText(sStepCount);
         mHBPMView.setText(sHeartRate);
-        mDBHandler.WriteValuesToDatabase(sHeartRate,sStepCount,SensorTimeStamp);
+        mCalories.setText(sCalories);
+        mSleepHrs.setText(sSleepHours);
     }
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -148,16 +155,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             sensorTimeReference = event.timestamp;
             myTimeReference = System.currentTimeMillis();
         }
-        /*  HR= 119
-            Age = 34
-            Weight = 80kg
-            EE = (-55.0969 + 0.6309 x 119 + 0.1988 x 80 + 0.2017 x 34)
-            EE = -55.0969 + 75 + 16 + 7 (using 1sf)
-            EE = 43KJ/min
-            EE = 43KJ/min x 15 min
-            EE = 643KJ x 0.23Kcal/KJ
-            EE = 154Kcal
-         */
+
         // set event timestamp to current time in milliseconds
         SensorTimeStamp = myTimeReference +
                 Math.round((event.timestamp - sensorTimeReference) / 1000000.0);
@@ -175,12 +173,20 @@ public class MainActivity extends WearableActivity implements SensorEventListene
             sHeartRate = Float.toString(HeartRate);
             AddSensorDataToDataLayer();
         }
-        if(event.sensor.getType() == Sensor.TYPE_MOTION_DETECT)
+        if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             String sEvent = event.toString();
             MotionDetect=event.values[0];
-            sSleepHours = Float.toString(MotionDetect);
+            if((MotionDetect < 0)&&(MotionDetect>-1))
+            sSleepHours = sSleepHours+1/1000000;
         }
+        mDBHandler.WriteValuesToDatabase(sHeartRate,sStepCount,SensorTimeStamp,sSleepHours);
+        String [] SensorData;
+        SensorData = mDBHandler.getSensorDataFromDatabase();
+        sStepCount = SensorData[0];
+        sHeartRate = SensorData[1];
+        sCalories = SensorData[2];
+        sSleepHours = SensorData[3];
         updateDisplay();
     }
 
@@ -205,17 +211,13 @@ public class MainActivity extends WearableActivity implements SensorEventListene
         Float fHBPM = Float.parseFloat(sHeartRate);
         Float fSteps = Float.parseFloat(sStepCount);
         String DeviceId = mDBHandler.getDeviceId();
-        if(DeviceId !=null)
-            Log.i("DeviceId in watch",DeviceId);
-        Log.i("DeviceId in watch","null");
-
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
         putDataMapReq.getDataMap().putFloat("Steps", fSteps);
         putDataMapReq.getDataMap().putFloat("HBPM", fHBPM);
-        putDataMapReq.getDataMap().putLong("TimeStamp",SensorTimeStamp);
+        putDataMapReq.getDataMap().putLong("Time",SensorTimeStamp);
         if(DeviceId != null)
          putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
-        putDataMapReq.setUrgent();
+        //putDataMapReq.setUrgent();
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mApiClient, putDataReq);
@@ -321,6 +323,7 @@ public class MainActivity extends WearableActivity implements SensorEventListene
                     String Steps = Float.toString(dataMap.getFloat("Steps"));
                     String HBPM = Float.toString(dataMap.getFloat("HBPM"));
                     String DeviceID = dataMap.getString("DeviceId");
+                    String TimeStamp = dataMap.getString("TimeStamp");
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted

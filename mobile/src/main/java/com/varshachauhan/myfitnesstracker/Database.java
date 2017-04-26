@@ -140,20 +140,6 @@ public class Database extends SQLiteOpenHelper{
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
-    public void AddDataToExternalDatabase(String DeviceID, float Steps, float HBPM, long timestamp, String URL){
-        // Building Parameters
-        JSONParser jsonParser = new JSONParser();
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("DeviceId", DeviceID ));
-            params.add(new BasicNameValuePair("Steps", Float.toString(Steps)));
-            params.add(new BasicNameValuePair("HBPM", Float.toString(HBPM)));
-            params.add(new BasicNameValuePair("timestamp", Long.toString(timestamp)));
-            JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
-    }
-
-
-
-
 
     public boolean InsertSensorDataIntoTable(float HeartRate, float StepCount, long time, String DeviceId)
     {
@@ -212,17 +198,13 @@ public class Database extends SQLiteOpenHelper{
         today.setSeconds(0);
         //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
         long millisecond = today.getTime();
-        Log.i("today's date",Long.toString(millisecond));
-        // String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", todayDate.getTime())).toString();
         SQLiteDatabase db = this.getWritableDatabase();
         //if an entry exists that has value greater 00:00 today means an entry for today exist
         String Query = "Select * from datagrams where sent_time >  \"" + millisecond + "\" AND deviceId = \""
                 + DeviceId + "\"" ;
-        Log.i("Query",Query);
         Cursor res = db.rawQuery(Query, null);
         if (res != null) {
             if (res.moveToFirst() && res.getCount() > 0) {
-                Log.i("No of rows",Integer.toString(res.getCount()));
                 return true;
             }
         }
@@ -234,15 +216,29 @@ public class Database extends SQLiteOpenHelper{
        //if an entry exists that has value greater 00:00 today means an entry for today exist
        String Query = "Select * from datagrams where sent_time >  \"" + TimeStamp + "\" AND deviceId = \""
                + deviceId + "\"" ;
-       Log.i("Query",Query);
        Cursor res = db.rawQuery(Query, null);
        if (res != null) {
            if (res.moveToFirst() && res.getCount() > 0) {
-               Log.i("No of rows",Integer.toString(res.getCount()));
                return true;
            }
        }
        return false;
    }
-
+   public String[] getRecentSensorData(String deviceId)
+   {
+       SQLiteDatabase db = this.getWritableDatabase();
+       String [] SensorData = {"","",""};
+       //if an entry exists that has value greater 00:00 today means an entry for today exist
+       String Query = "Select * from datagrams where deviceId = \"" + deviceId + "\" ORDER BY sent_time DESC LIMIT 1";;
+       Cursor res = db.rawQuery(Query, null);
+       if (res != null) {
+           if (res.moveToFirst() && res.getCount() > 0)
+           {
+               SensorData[0] = Float.toString(res.getFloat(res.getColumnIndex("steps")));
+               SensorData[1] = Float.toString(res.getFloat(res.getColumnIndex("hbpm")));
+               SensorData[2] = Float.toString(res.getFloat(res.getColumnIndex("calories")));
+           }
+       }
+       return SensorData;
+   }
 }

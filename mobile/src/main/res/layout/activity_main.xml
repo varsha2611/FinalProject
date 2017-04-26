@@ -23,11 +23,11 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/loadSideViewButton"
+                android:id="@+id/upload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:srcCompat="@mipmap/menu"
+                app:srcCompat="@mipmap/upload"
                 tools:ignore="ContentDescription" />
 
             <TextView

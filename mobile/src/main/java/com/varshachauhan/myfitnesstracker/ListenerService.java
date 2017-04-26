@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -68,20 +69,21 @@ public class ListenerService extends WearableListenerService implements DataApi.
                     Float Steps = dataMap.getFloat("Steps");
                     Float HBPM = dataMap.getFloat("HBPM");
                     String DeviceID = dataMap.getString("DeviceId");
-                    Long timestamp = dataMap.getLong("TimeStamp");
-
+                    Properties.CurrentDeviceID=DeviceID;
+                    Long timestamp = dataMap.getLong("Time");
                     /* Add Values to Database*/
                     dataBase.InsertSensorDataIntoTable(Steps,HBPM,timestamp,DeviceID);
-                    Intent intent = new Intent( this, AddDevice.class );
-                    intent.putExtra("DeviceId",DeviceID);
-                    intent.putExtra("type","Upload");
-                    intent.putExtra("Steps",Float.toString(Steps));
-                    intent.putExtra("HBPM", Float.toString(HBPM));
-                    intent.putExtra("TimeStamp",Long.toString(timestamp));
-                    intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-                    startActivity( intent );
+                    if(Properties.user != null)
+                    {
+                        try
+                        {
+                            new getData(DeviceID, Steps, HBPM, timestamp, "Upload");
+                        }
+                        catch(Exception e)
+                        {
 
-
+                        }
+                    }
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted

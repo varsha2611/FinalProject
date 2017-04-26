@@ -90,25 +90,30 @@ public class DatabaseHandler {
                  onUpgrade(db, oldVersion, newVersion);
              }
 
-             public boolean WriteValuesToDatabase(String HeartRate, String StepCount, long timestamp) {
+             public boolean WriteValuesToDatabase(String HeartRate, String StepCount, long timestamp,String SleepHours) {
                  float iHeartRate = Float.parseFloat(HeartRate);
                  float iStepCount = Float.parseFloat(StepCount);
+                 float iSleepHrs = Float.parseFloat(SleepHours);
 
                  //Check if the date entry for the device is already in the table
                  if (true == EntryAlreadyExist(timestamp)) {
-                     UpdateTableWithNewValues(iHeartRate, iStepCount, timestamp);
+                     UpdateTableWithNewValues(iHeartRate, iStepCount, iSleepHrs, timestamp);
                      //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
                      return true;
                  } else {
                      //Add new row in the table
                      // Gets the data repository in write mode
+                     float previousSteps = getLastValue(FeedEntry.COLUMN_NAME_STEPS);
+                     if(previousSteps < iStepCount)
+                         iStepCount = iStepCount - previousSteps;
 
                      SQLiteDatabase db = this.getWritableDatabase();
-                     double Calories = CalculateCaloriesFromHeartRateAndTime(iHeartRate);
+                     float Calories = CalculateCaloriesFromHeartRateAndTime(iHeartRate);
                      ContentValues values = new ContentValues();
-                     values.put(COLUMN_NAME_HBPM, HeartRate);
-                     values.put(COLUMN_NAME_STEPS, StepCount);
+                     values.put(COLUMN_NAME_HBPM, iHeartRate);
+                     values.put(COLUMN_NAME_STEPS, iStepCount);
                      values.put(COLUMN_NAME_CALORIES, Calories);
+                     values.put(COLUMN_NAME_SLEEP,iSleepHrs);
                      values.put(COLUMN_NAME_TIMESTAMP, timestamp);
                      // Insert the new row, returning the primary key value of the new row
                      long newRowId;
@@ -130,7 +135,7 @@ public class DatabaseHandler {
                  today.setSeconds(0);
                  //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
                  long millisecond = today.getTime();
-                 Log.i("today's date",Long.toString(millisecond));
+                 //Log.i("today's date",Long.toString(millisecond));
                  // String currentDate  = (DateFormat.format("yyyy-MM-dd HH:mm:ss", todayDate.getTime())).toString();
                  SQLiteDatabase db = this.getWritableDatabase();
                  //if an entry exists that has value greater 00:00 today means an entry for today exist
@@ -138,24 +143,30 @@ public class DatabaseHandler {
                  Cursor res = db.rawQuery(Query, null);
                  if (res != null) {
                      if (res.moveToFirst() && res.getCount() > 0) {
-                         Log.i("No of rows",Integer.toString(res.getCount()));
+                        // Log.i("No of rows",Integer.toString(res.getCount()));
                          return true;
                      }
                  }
                  return false;
              }
 
-             public boolean UpdateTableWithNewValues(float HeartRate, float StepCount, long time) {
+             public boolean UpdateTableWithNewValues(float HeartRate, float StepCount, float SleepHrs,long time) {
                  Date today = new Date();
                  today.setHours(0);
                  today.setMinutes(0);
                  today.setSeconds(0);
                  long millisecond = today.getTime();
+                 float calories = CalculateCaloriesFromHeartRateAndTime(HeartRate);
+                 float previousSteps = getLastValue(FeedEntry.COLUMN_NAME_STEPS);
+                 if(previousSteps > StepCount)
+                     StepCount = StepCount+previousSteps;
                  SQLiteDatabase db = this.getWritableDatabase();
                  ContentValues con = new ContentValues();
                  con.put(FeedEntry.COLUMN_NAME_STEPS, StepCount);
                  con.put(FeedEntry.COLUMN_NAME_HBPM, HeartRate);
                  con.put(FeedEntry.COLUMN_NAME_TIMESTAMP, time);
+                 con.put(FeedEntry.COLUMN_NAME_CALORIES, calories);
+                 con.put(FeedEntry.COLUMN_NAME_SLEEP,SleepHrs);
                  db.update(FeedEntry.TABLE_NAME_WATCH_DATABASE, con,
                          FeedEntry.COLUMN_NAME_TIMESTAMP + ">?",
                          new String[]{Long.toString(millisecond)});
@@ -163,14 +174,30 @@ public class DatabaseHandler {
                  return true;
              }
 
-             public double CalculateCaloriesFromHeartRateAndTime(float HeartRate) {
-                 double calories = 0.0f;
+             public float CalculateCaloriesFromHeartRateAndTime(float HeartRate) {
+                 float calories = 0.0f;
+                 calories =  getLastValue(FeedEntry.COLUMN_NAME_CALORIES) +
+                         ( (( - 55.0969f + (0.6309f * HeartRate) + (0.1988f *50) + (0.2017f *30))/4.184f)*(1.666668f))/100000;
                  return calories;
              }
 
-             public Cursor getValuesFromWatchDatabase() {
-                 Cursor res = null;
-                 return res;
+             public String[] getSensorDataFromDatabase()
+             {
+                 String[] SensorData={"","","",""};
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY " + FeedEntry.COLUMN_NAME_TIMESTAMP +" DESC LIMIT 1";
+                 Cursor res = db.rawQuery(Query, null);
+                 if (res != null)
+                 {
+                     if (res.moveToFirst() && res.getCount() > 0)
+                     {
+                         SensorData[0] = Float.toString(res.getFloat(res.getColumnIndex(FeedEntry.COLUMN_NAME_STEPS)));
+                         SensorData[1] = Float.toString(res.getFloat(res.getColumnIndex(FeedEntry.COLUMN_NAME_HBPM)));
+                         SensorData[2] = Float.toString(res.getFloat(res.getColumnIndex(FeedEntry.COLUMN_NAME_CALORIES)));
+                         SensorData[3] = Float.toString(res.getFloat(res.getColumnIndex(FeedEntry.COLUMN_NAME_SLEEP)));
+                     }
+                 }
+                 return SensorData;
              }
 
              public String getDeviceId() {
@@ -202,6 +229,18 @@ public class DatabaseHandler {
                  else
                      return true;
              }
+             public float getLastValue(String ColumnName)
+             {
+                 Float data =0.0f;
+                 SQLiteDatabase db = this.getWritableDatabase();
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY " + FeedEntry.COLUMN_NAME_TIMESTAMP +" DESC LIMIT 1";
+                 Cursor res = db.rawQuery(Query, null);
+                 if (res != null) {
+                     if (res.moveToFirst() && res.getCount() > 0)
+                         data = res.getFloat(res.getColumnIndex(ColumnName));
+                 }
+                     return data;
+             }
 
              public String[] getMaxValueOfColumn(String columnName) {
                  SQLiteDatabase db = this.getWritableDatabase();
@@ -209,7 +248,7 @@ public class DatabaseHandler {
                  TopThreeValues[0]="0.0";
                  TopThreeValues[1]="0.0";
                  TopThreeValues[2]="0.0";
-                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY  " + columnName + " DESC";
+                 String Query = "Select * from " + TABLE_NAME_WATCH_DATABASE + " ORDER BY  " + columnName + " DESC LIMIT 3";
                  Cursor res = db.rawQuery(Query, null);
                  if (res != null) {
                      if (res.moveToFirst() && res.getCount() > 0) {

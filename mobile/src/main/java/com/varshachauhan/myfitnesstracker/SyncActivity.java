@@ -23,7 +23,6 @@ import java.util.List;
 
 public class SyncActivity extends AppCompatActivity {
 
-    private ProgressDialog pDialog;
     JSONParser jParser = new JSONParser();
     Database dataBase;
     // JSON Node names
@@ -41,14 +40,19 @@ public class SyncActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sync);
         String type = getIntent().getStringExtra("type");
         String DeviceId = getIntent().getStringExtra("DeviceId");
+        String sSteps = getIntent().getStringExtra("Steps");
+        String sHBPM = getIntent().getStringExtra("HBPM");
+        String stimestamp = getIntent().getStringExtra("TimeStamp");
         float Steps=0.0f;
         float HBPM =0.0f;
         long timestamp=0;
         try
         {
-             Steps = Float.parseFloat(getIntent().getStringExtra("Steps"));
-             HBPM = Float.parseFloat(getIntent().getStringExtra("HBPM"));
-             timestamp = Long.parseLong(getIntent().getStringExtra("timestamp"));
+            if(sSteps !=null && sHBPM !=null && stimestamp!=null) {
+                Steps = Float.parseFloat(sSteps);
+                HBPM = Float.parseFloat(sHBPM);
+                timestamp = Long.parseLong(stimestamp);
+            }
         }catch(Exception e)
         {
             Log.i("Exception","HERE");
@@ -75,23 +79,11 @@ public class SyncActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(SyncActivity.this);
-            pDialog.setMessage("Downloading data for devices. Please wait...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
         }
         @Override
         protected String doInBackground(String... args) {
 
-            if(type == "Upload")
-            {
-                String url = "https://people.cs.clemson.edu/~varshac/public_html/CPSC6820/Project/UploadDataToExternalDatabase.php";
-                dataBase.AddDataToExternalDatabase(DeviceID, Steps, HBPM, timestamp,url);
-            }
-            else
-                DownLoadFromExternalDataBase();
-
+            DownLoadFromExternalDataBase();
                 return null;
         }
         /**
@@ -99,11 +91,10 @@ public class SyncActivity extends AppCompatActivity {
          * **/
         protected void onPostExecute(String file_url) {
             // dismiss the dialog after getting all products
-            pDialog.dismiss();
             Intent i = new Intent(getApplicationContext(),
                     MainActivity.class);
             // Closing all previous activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(i);
             // updating UI from Background Thread
         }
@@ -129,6 +120,7 @@ public class SyncActivity extends AppCompatActivity {
                     // looping through All Products
                     for (int i = 0; i < datagrams.length(); i++)
                     {
+                        Log.i("inside ","DownloadFromExternal");
                         JSONObject data = datagrams.getJSONObject(i);
                         String deviceId = data.getString("DeviceId");
                         Float Steps = Float.parseFloat(data.getString("Steps"));
@@ -141,9 +133,6 @@ public class SyncActivity extends AppCompatActivity {
                     }
                 } else
                 {
-                    // no products found
-                    // Launch Add New product Activity
-                    Toast.makeText(getApplicationContext(),"Nothing to Download",Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getApplicationContext(),
                             MainActivity.class);
                     // Closing all previous activities

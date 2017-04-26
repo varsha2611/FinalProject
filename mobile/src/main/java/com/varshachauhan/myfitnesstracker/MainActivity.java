@@ -60,17 +60,15 @@ public class MainActivity extends AppCompatActivity
         TextView curSteps = (TextView) findViewById(R.id.curSteps);
         TextView curHBPM = (TextView) findViewById(R.id.curHBPM);
         TextView curDevices = (TextView) findViewById(R.id.curDevices);
-
+        String[] SensorData;
+        SensorData = dataBase.getRecentSensorData(Properties.CurrentDeviceID);
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
         todayDate.setText(dateFormat.format(new Date()));
 
         int calories = 0;
-        curCalories.setText(Integer.toString(calories));
-
-        curSteps.setText(Float.toString(Steps));
-        Log.i("setting value",Float.toString(heartRate));
-
-        curHBPM.setText(Float.toString(heartRate));
+        curSteps.setText(SensorData[1]);
+        curHBPM.setText(SensorData[0]);
+        curCalories.setText(SensorData[2]);
 
         int devices = 0;
         curDevices.setText(Integer.toString(devices));
@@ -257,7 +255,7 @@ public class MainActivity extends AppCompatActivity
             {
                 toast("Sending request to connected wearable");
                 Intent i = new Intent(MainActivity.this, SendNotification.class);
-                String strName = "Varsha";
+                String strName = Properties.user;
                 i.putExtra("user", strName);
                 startActivity(i);
                 finish();
@@ -283,10 +281,12 @@ public class MainActivity extends AppCompatActivity
         generateRecentData(myContext);
 
         //testing for login stuff
-        ImageButton loginButton = (ImageButton) findViewById(R.id.loadSideViewButton);
+        ImageButton loginButton = (ImageButton) findViewById(R.id.upload);
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                startActivity(new Intent(MainActivity.this, SyncActivity.class));
+                //toast("test");
             }
         });
 

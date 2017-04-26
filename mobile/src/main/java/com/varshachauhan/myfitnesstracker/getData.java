@@ -9,12 +9,15 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -26,6 +29,10 @@ public class getData extends AsyncTask<String, Void, String> {
     private String userName;
     private String passWord;
     private String requestType;
+    private String DeviceID;
+    private float Steps;
+    private float HBPM;
+    private long timestamp;
 
     public getData (String user, String pass, String type) throws ExecutionException, InterruptedException {
         Log.i("getData", "starting getData");
@@ -35,6 +42,14 @@ public class getData extends AsyncTask<String, Void, String> {
         Log.i("getData", "\"" + userName + "\"\t\"" + passWord + "\"\t\"" + requestType + "\"");
         String hi = this.execute().get();
         Log.i("getData hi", hi);
+    }
+    public getData (String DeviceID, float Steps, float HBPM, long timestamp, String type) throws ExecutionException, InterruptedException{
+        this.DeviceID = DeviceID;
+        this.Steps = Steps;
+        this.HBPM = HBPM;
+        this.timestamp = timestamp;
+        this.requestType = type;
+        this.execute().get();
     }
 
     @Override
@@ -58,6 +73,12 @@ public class getData extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params){
+        if(requestType.equals("Upload"))
+        {
+            String url = "https://people.cs.clemson.edu/~varshac/CPSC6820/Project/UploadDataToExternalDatabase.php";
+            AddDataToExternalDatabase(DeviceID, Steps, HBPM, timestamp,url);
+            return "";
+        }
         DefaultHttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
         HttpPost httppost = new HttpPost(getURL());
         List<NameValuePair> myParams = new ArrayList<NameValuePair>();
@@ -88,5 +109,24 @@ public class getData extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result){
         Database.getData = result;
+    }
+
+    public void AddDataToExternalDatabase(String DeviceID, float Steps, float HBPM, long timestamp, String URL){
+        // Building Parameters
+        Date today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        //String date = (DateFormat.format("dd-MM-yyyy",today.getTime())).toString();
+        long millisecond = today.getTime();
+        Log.i("AddDataToExtDatabase",Long.toString(timestamp));
+        JSONParser jsonParser = new JSONParser();
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("DeviceId", DeviceID ));
+        params.add(new BasicNameValuePair("Steps", Float.toString(Steps)));
+        params.add(new BasicNameValuePair("HBPM", Float.toString(HBPM)));
+        params.add(new BasicNameValuePair("timestamp", Long.toString(timestamp)));
+        params.add(new BasicNameValuePair("today", Long.toString(millisecond)));
+        JSONObject json = jsonParser.makeHttpRequest(URL, "POST", params);
     }
 }

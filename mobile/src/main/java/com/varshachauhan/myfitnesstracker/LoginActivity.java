@@ -78,7 +78,7 @@ public class LoginActivity extends Activity {
             if(Database.getData.equals(tester)){
                 Database.getData = "";
                 new Database(this).setLogin(userName, passWord);
-
+                Properties.user = userName;
                 return true;
             } else {
                 toast("Invalid login");
