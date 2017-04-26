@@ -254,7 +254,6 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context myContext = LoginActivity.this;
-        Log.i("test", "test");
         try {
             if(new Database(myContext).isLoggedIn()){
                 startMain(myContext);
@@ -262,7 +261,6 @@ public class LoginActivity extends Activity {
         } catch (Exception e){
             Log.i("login", "there's still problems");
         }
-        Log.i("test", "test2");
         setContentView(R.layout.activity_login);
         registerAccount(myContext);
         accountLogin(myContext);
