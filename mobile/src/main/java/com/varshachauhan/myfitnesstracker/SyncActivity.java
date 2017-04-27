@@ -88,7 +88,6 @@ public class SyncActivity extends AppCompatActivity {
                     // looping through All Products
                     for (int i = 0; i < datagrams.length(); i++)
                     {
-                        Log.i("inside ","DownloadFromExternal");
                         JSONObject data = datagrams.getJSONObject(i);
                         String deviceId = data.getString("DeviceId");
                         Float Steps = Float.parseFloat(data.getString("Steps"));

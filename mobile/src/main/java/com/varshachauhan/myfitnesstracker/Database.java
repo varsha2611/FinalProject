@@ -127,6 +127,12 @@ public class Database extends SQLiteOpenHelper{
         }
     }
 
+    public int GetNumberOfDevices(){
+        String Query = "select * from watches where deleted = 'false'" ;
+        Cursor c = db.rawQuery(Query, null);
+        return(c.getCount() );
+    }
+
 
 
     @Override
@@ -150,7 +156,9 @@ public class Database extends SQLiteOpenHelper{
 
     public boolean InsertSensorDataIntoTable(float HeartRate, float StepCount,float Calories, float fSleep, long time, String DeviceId)
     {
+        Log.i("inside","InsertSensorDataIntoTable");
         if (true == EntryAlreadyExist(DeviceId)) {
+            Log.i("updating","row");
             UpdateTableWithNewValues( HeartRate,StepCount, Calories, fSleep,time,DeviceId);
             //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
             return true;
@@ -159,6 +167,7 @@ public class Database extends SQLiteOpenHelper{
             // Gets the data repository in write mode
 
             //SQLiteDatabase db = this.getWritableDatabase();
+
             ContentValues con = new ContentValues();
             con.put("deviceId", DeviceId);
             con.put("hbpm", HeartRate);
@@ -234,16 +243,18 @@ public class Database extends SQLiteOpenHelper{
    public String[] getRecentSensorData(String deviceId)
    {
        SQLiteDatabase db = this.getWritableDatabase();
-       String [] SensorData = {"","",""};
+       String [] SensorData = {"","","",""};
        //if an entry exists that has value greater 00:00 today means an entry for today exist
        String Query = "Select * from datagrams where deviceId = \"" + deviceId + "\" ORDER BY sent_time DESC LIMIT 1";;
        Cursor res = db.rawQuery(Query, null);
        if (res != null) {
            if (res.moveToFirst() && res.getCount() > 0)
            {
+               Log.i("recent data",Integer.toString(res.getCount()));
                SensorData[0] = Float.toString(res.getFloat(res.getColumnIndex("steps")));
                SensorData[1] = Float.toString(res.getFloat(res.getColumnIndex("hbpm")));
                SensorData[2] = Float.toString(res.getFloat(res.getColumnIndex("calories")));
+               SensorData[3] = Float.toString(res.getFloat(res.getColumnIndex("sleep")));
            }
        }
        return SensorData;

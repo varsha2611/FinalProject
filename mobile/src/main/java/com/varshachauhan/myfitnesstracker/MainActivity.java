@@ -98,20 +98,23 @@ public class MainActivity extends AppCompatActivity
         TextView curHBPM = (TextView) findViewById(R.id.curHBPM);
         TextView curDevices = (TextView) findViewById(R.id.curDevices);
         String[] SensorData;
-        if(DeviceId == null)
-          SensorData = dataBase.getRecentSensorData(Properties.CurrentDeviceID);
+        if(DeviceId != null)
+        {
+            Log.i("Device id is","null here");
+            SensorData =  dataBase.getRecentSensorData(DeviceId);
+            TextView NbOfDevices = (TextView)findViewById(R.id.textView10);
+            NbOfDevices.setText("Sleep");
+            curDevices.setText(SensorData[3]);
+        }
         else
-           SensorData =  dataBase.getRecentSensorData(DeviceId);
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
-        todayDate.setText(dateFormat.format(new Date()));
-
-        int calories = 0;
+        {
+            SensorData = dataBase.getRecentSensorData(Properties.CurrentDeviceID);
+            curDevices.setText(Integer.toString( dataBase.GetNumberOfDevices()));
+        }
+        Log.i("Steps",SensorData[0]);
         curSteps.setText(SensorData[1]);
         curHBPM.setText(SensorData[0]);
         curCalories.setText(SensorData[2]);
-
-        int devices = 0;
-        curDevices.setText(Integer.toString(devices));
     }
 
     private void generateAchievementData(final Context myContext) {
@@ -276,12 +279,12 @@ public class MainActivity extends AppCompatActivity
                         });
                         deviceContext.setNegativeButton("Show Sensor Data", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.i("ShowDeviceData",deviceId);
                                 TextView currentContext = (TextView) findViewById(R.id.currentContext);
                                 currentContext.setText(nickname);
-                                generateRecentData(myContext,deviceId);
                                 ViewFlipper currentWindow = (ViewFlipper) findViewById(R.id.window_context);
                                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.homeView)));
+                                Log.i("DeviceID HERE",deviceId);
+                                generateRecentData(myContext,deviceId);
                             }
                         });
                         deviceContext.create();
@@ -328,14 +331,6 @@ public class MainActivity extends AppCompatActivity
             Steps = Float.parseFloat(steps);
         generateRecentData(myContext,null);
 
-        //testing for login stuff
-        ImageButton loginButton = (ImageButton) findViewById(R.id.upload);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                sideMenu(v);
-            }
-        });
-
         //Achievement Button
         ImageButton achievementButton = (ImageButton) findViewById(R.id.achievementButton);
         achievementButton.setOnClickListener(new View.OnClickListener() {
@@ -379,7 +374,7 @@ public class MainActivity extends AppCompatActivity
         recentDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentContext.setText("homeTitle");
+                currentContext.setText(homeTitle);
                 generateRecentData(myContext,null);
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.homeView)));
             }
