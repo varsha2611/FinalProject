@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void generateRecentData(final Context myContext,String DeviceId) {
-        TextView todayDate = (TextView) findViewById(R.id.todayDate);
+        //TextView todayDate = (TextView) findViewById(R.id.todayDate);
         TextView curCalories = (TextView) findViewById(R.id.curCalories);
         TextView curSteps = (TextView) findViewById(R.id.curSteps);
         TextView curHBPM = (TextView) findViewById(R.id.curHBPM);
@@ -340,8 +340,13 @@ public class MainActivity extends AppCompatActivity
         ImageButton achievementButton = (ImageButton) findViewById(R.id.achievementButton);
         achievementButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                currentContext.setText("Personal Achievements");
+                currentContext.setText("Records");
                 generateAchievementData(myContext);
+                try{
+                    generateLeaderBoard(myContext);
+                } catch (Exception e){
+                    Log.i("leader board", "could not generate leaderboard");
+                }
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.achievementView)));
             }
         });
@@ -362,24 +367,19 @@ public class MainActivity extends AppCompatActivity
         ImageButton leaderBoardButton = (ImageButton) findViewById(R.id.leaderBoardButton);
         leaderBoardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                currentContext.setText("Leader Board");
-                try {
-                    generateLeaderBoard(myContext);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.leaderView)));
+                sideMenu(v);
             }
         });
 
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+        final String homeTitle = dateFormat.format(new Date()) + " Stats";
+        currentContext.setText(homeTitle);
         //Home Button
         ImageButton recentDataButton = (ImageButton) findViewById(R.id.homeButton);
         recentDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentContext.setText("Recent Stats");
+                currentContext.setText("homeTitle");
                 generateRecentData(myContext,null);
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.homeView)));
             }

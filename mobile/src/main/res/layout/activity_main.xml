@@ -16,28 +16,21 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         tools:ignore="ObsoleteLayoutParam">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.75"
             android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/upload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:srcCompat="@mipmap/bell"
-                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/currentContext"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Recent Stats"
                 android:textAppearance="@style/TextAppearance.AppCompat"
+                android:layout_centerInParent="true"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -46,12 +39,13 @@
             <ImageButton
                 android:id="@+id/leaderBoardButton"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
                 app:srcCompat="@mipmap/bell"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription,RtlHardcoded" />
 
-        </LinearLayout>
+        </RelativeLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.AppBarLayout
@@ -113,6 +107,5 @@
             android:layout_height="466dp" />
         <include android:id="@+id/devicesView" layout="@layout/content_devices" />
         <include android:id="@+id/achievementView" layout="@layout/content_achievement" />
-        <include android:id="@+id/leaderView" layout="@layout/content_leader_board" />
     </ViewFlipper>
 </RelativeLayout>

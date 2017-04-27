@@ -19,14 +19,17 @@
             android:id="@+id/achievementTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Achievements for "
+            android:text="Personal Achievements"
             android:textAlignment="center"
+            android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@android:color/black"
             tools:ignore="HardcodedText" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
@@ -39,7 +42,7 @@
                 android:text="Max steps"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
             <TextView
                 android:id="@+id/maxSteps"
@@ -49,7 +52,7 @@
                 android:text="TextView"
                 android:layout_toLeftOf="@+id/maxStepsDay"
                 android:layout_marginRight="10dp"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam,RtlHardcoded" />
 
             <TextView
                 android:id="@+id/maxStepsDay"
@@ -58,7 +61,7 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:layout_alignParentEnd="true"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
         </RelativeLayout>
 
@@ -77,7 +80,7 @@
                 android:text="Max calories"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
             <TextView
                 android:id="@+id/maxCalories"
@@ -88,7 +91,7 @@
                 android:layout_toLeftOf="@+id/maxCaloriesDay"
                 android:layout_marginRight="10dp"
                 android:textAlignment="textEnd"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam,RtlHardcoded" />
 
             <TextView
                 android:id="@+id/maxCaloriesDay"
@@ -97,7 +100,7 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:layout_alignParentEnd="true"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -115,7 +118,7 @@
                 android:text="Max sleep"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
             <TextView
                 android:id="@+id/maxSleep"
@@ -126,7 +129,7 @@
                 android:layout_marginRight="10dp"
                 android:text="TextView"
                 android:textAlignment="textEnd"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam,RtlHardcoded" />
 
             <TextView
                 android:id="@+id/maxSleepDay"
@@ -135,7 +138,7 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:layout_alignParentEnd="true"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -153,7 +156,7 @@
                 android:text="Min sleep"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
 
             <TextView
                 android:id="@+id/minSleep"
@@ -164,7 +167,7 @@
                 android:layout_marginRight="10dp"
                 android:text="TextView"
                 android:textAlignment="textEnd"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam,RtlHardcoded" />
 
             <TextView
                 android:id="@+id/minSleepDay"
@@ -173,8 +176,71 @@
                 android:layout_weight="1"
                 android:text="TextView"
                 android:layout_alignParentEnd="true"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,ObsoleteLayoutParam" />
         </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/middle"
+        android:text="Leaderboard"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:layout_centerVertical="true"
+        android:textSize="34sp"
+        tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="UselessParent"
+        android:layout_below="@+id/middle"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:text="Device"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:text="Steps"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/leaderBoard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            tools:ignore="InefficientWeight,UselessLeaf">
+
+        </TableLayout>
 
     </LinearLayout>
 
