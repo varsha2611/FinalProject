@@ -38,44 +38,12 @@ public class SyncActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
-        String type = getIntent().getStringExtra("type");
-        String DeviceId = getIntent().getStringExtra("DeviceId");
-        String sSteps = getIntent().getStringExtra("Steps");
-        String sHBPM = getIntent().getStringExtra("HBPM");
-        String stimestamp = getIntent().getStringExtra("TimeStamp");
-        float Steps=0.0f;
-        float HBPM =0.0f;
-        long timestamp=0;
-        try
-        {
-            if(sSteps !=null && sHBPM !=null && stimestamp!=null) {
-                Steps = Float.parseFloat(sSteps);
-                HBPM = Float.parseFloat(sHBPM);
-                timestamp = Long.parseLong(stimestamp);
-            }
-        }catch(Exception e)
-        {
-            Log.i("Exception","HERE");
-        }
-
         dataBase = new Database(this.getApplicationContext());
-        SyncToExternalDatabase syncActivity = new SyncToExternalDatabase(DeviceId,Steps,HBPM,timestamp,type);
+        SyncToExternalDatabase syncActivity = new SyncToExternalDatabase();
         syncActivity.execute();
     }
     public class SyncToExternalDatabase extends AsyncTask<String,String,String> {
-        private String type;
-        private String DeviceID;
-        private float Steps;
-        private float HBPM;
-        private long timestamp;
 
-        public SyncToExternalDatabase(String DeviceID, float Steps, float HBPM, long timestamp, String type) {
-            this.DeviceID = DeviceID;
-            this.Steps=Steps;
-            this.HBPM=HBPM;
-            this.timestamp=timestamp;
-            this.type = type;
-    }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -126,9 +94,10 @@ public class SyncActivity extends AppCompatActivity {
                         Float Steps = Float.parseFloat(data.getString("Steps"));
                         Float HBPM = Float.parseFloat(data.getString("HBPM"));
                         Float Calories = Float.parseFloat(data.getString("Calories"));
+                        Float fSleep = Float.parseFloat(data.getString("Sleep"));
                         long TimeStamp = Long.parseLong(data.getString("TimeStamp"));
                         if(false == dataBase.ValueInInternalDatabase(deviceId,TimeStamp))
-                            dataBase.InsertSensorDataIntoTable(HBPM, Steps, TimeStamp, deviceId);
+                            dataBase.InsertSensorDataIntoTable(HBPM, Steps,Calories,fSleep,TimeStamp, deviceId);
 
                     }
                 } else

@@ -33,6 +33,8 @@ public class getData extends AsyncTask<String, Void, String> {
     private float Steps;
     private float HBPM;
     private long timestamp;
+    private float Calories;
+    private float fSleep;
 
     public getData (String user, String pass, String type) throws ExecutionException, InterruptedException {
         Log.i("getData", "starting getData");
@@ -43,12 +45,14 @@ public class getData extends AsyncTask<String, Void, String> {
         String hi = this.execute().get();
         Log.i("getData hi", hi);
     }
-    public getData (String DeviceID, float Steps, float HBPM, long timestamp, String type) throws ExecutionException, InterruptedException{
+    public getData (String DeviceID, float Steps, float HBPM,float Calories, float fSleep, long timestamp, String type) throws ExecutionException, InterruptedException{
         this.DeviceID = DeviceID;
         this.Steps = Steps;
         this.HBPM = HBPM;
         this.timestamp = timestamp;
         this.requestType = type;
+        this.Calories=Calories;
+        this.fSleep=fSleep;
         this.execute().get();
     }
 
@@ -76,7 +80,7 @@ public class getData extends AsyncTask<String, Void, String> {
         if(requestType.equals("Upload"))
         {
             String url = "https://people.cs.clemson.edu/~varshac/CPSC6820/Project/UploadDataToExternalDatabase.php";
-            AddDataToExternalDatabase(DeviceID, Steps, HBPM, timestamp,url);
+            AddDataToExternalDatabase(DeviceID, Steps, HBPM, Calories,fSleep, timestamp,url);
             return "";
         }
         DefaultHttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
@@ -111,7 +115,7 @@ public class getData extends AsyncTask<String, Void, String> {
         Database.getData = result;
     }
 
-    public void AddDataToExternalDatabase(String DeviceID, float Steps, float HBPM, long timestamp, String URL){
+    public void AddDataToExternalDatabase(String DeviceID, float Steps, float HBPM, float Calories, float fSleep,long timestamp, String URL){
         // Building Parameters
         Date today = new Date();
         today.setHours(0);
@@ -125,6 +129,8 @@ public class getData extends AsyncTask<String, Void, String> {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("DeviceId", DeviceID ));
         params.add(new BasicNameValuePair("Steps", Float.toString(Steps)));
+        params.add(new BasicNameValuePair("Calories", Float.toString(Calories)));
+        params.add(new BasicNameValuePair("Sleep", Float.toString(fSleep)));
         params.add(new BasicNameValuePair("HBPM", Float.toString(HBPM)));
         params.add(new BasicNameValuePair("timestamp", Long.toString(timestamp)));
         params.add(new BasicNameValuePair("today", Long.toString(millisecond)));

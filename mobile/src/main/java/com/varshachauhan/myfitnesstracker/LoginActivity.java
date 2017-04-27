@@ -72,13 +72,13 @@ public class LoginActivity extends Activity {
     }
 
     private boolean login(String userName, String passWord) throws ExecutionException, InterruptedException {
+        Log.i("login",userName);
         new getData(userName, passWord, "validateLogin");
         try {
             String tester = "Login Successful\n";
             if(Database.getData.equals(tester)){
                 Database.getData = "";
                 new Database(this).setLogin(userName, passWord);
-                Properties.user = userName;
                 return true;
             } else {
                 toast("Invalid login");
@@ -254,6 +254,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context myContext = LoginActivity.this;
+        Log.i("oncreate", "Login");
         try {
             if(new Database(myContext).isLoggedIn()){
                 startMain(myContext);

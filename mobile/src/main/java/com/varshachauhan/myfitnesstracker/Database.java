@@ -38,6 +38,7 @@ public class Database extends SQLiteOpenHelper{
     public void exec(String querry){ db.execSQL(querry); }
 
     public void setLogin(String userName, String passWord){
+        Properties.user=userName;
         db.execSQL("update login set username = \"" + userName + "\" where asdf = '1'");
         db.execSQL("update login set password = \"" + passWord + "\" where asdf = '1'");
         if(isLoggedIn())
@@ -49,6 +50,7 @@ public class Database extends SQLiteOpenHelper{
         Cursor res = db.rawQuery(Query, null);
         if (res != null) {
             if (res.moveToFirst() && res.getCount() > 0) {
+                Properties.user=res.getString(0);
                 //Log.i("login", "username: " + res.getString(0));
                 //Log.i("login", "password: " + res.getString(1));
                 if(!res.getString(0).equals("") && !res.getString(1).equals(""))
@@ -146,10 +148,10 @@ public class Database extends SQLiteOpenHelper{
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public boolean InsertSensorDataIntoTable(float HeartRate, float StepCount, long time, String DeviceId)
+    public boolean InsertSensorDataIntoTable(float HeartRate, float StepCount,float Calories, float fSleep, long time, String DeviceId)
     {
         if (true == EntryAlreadyExist(DeviceId)) {
-            UpdateTableWithNewValues( HeartRate,StepCount,time,DeviceId);
+            UpdateTableWithNewValues( HeartRate,StepCount, Calories, fSleep,time,DeviceId);
             //UpdateExternalDatabase(iHeartRate,iStepCount,timestamp);
             return true;
         } else {
@@ -161,8 +163,8 @@ public class Database extends SQLiteOpenHelper{
             con.put("deviceId", DeviceId);
             con.put("hbpm", HeartRate);
             con.put("steps", StepCount);
-            con.put("calories",0.0);
-            con.put("sleep", 0.0);
+            con.put("calories",Calories);
+            con.put("sleep", fSleep);
             con.put("sent_time", time);
             // Insert the new row, returning the primary key value of the new row
             long newRowId;
@@ -176,7 +178,7 @@ public class Database extends SQLiteOpenHelper{
                 return true;
         }
     }
-    public boolean UpdateTableWithNewValues(float HeartRate, float StepCount, long time, String DeviceId) {
+    public boolean UpdateTableWithNewValues(float HeartRate, float StepCount, float Calories, float fSleep, long time, String DeviceId) {
         Date today = new Date();
         today.setHours(0);
         today.setMinutes(0);
@@ -187,8 +189,8 @@ public class Database extends SQLiteOpenHelper{
         con.put("deviceId", DeviceId);
         con.put("hbpm", HeartRate);
         con.put("steps", StepCount);
-        con.put("calories",0.0);
-        con.put("sleep", 0.0);
+        con.put("calories",Calories);
+        con.put("sleep", fSleep);
         con.put("sent_time", time);
         db.update("datagrams", con,
                  "DeviceId  =? AND sent_time > ?",

@@ -215,11 +215,15 @@ public class MainActivity extends WearableActivity implements SensorEventListene
     {
         Float fHBPM = Float.parseFloat(sHeartRate);
         Float fSteps = Float.parseFloat(sStepCount);
+        Float fCalories = Float.parseFloat(sCalories);
+        Float fSleep = Float.parseFloat(sSleepHours);
         String DeviceId = mDBHandler.getDeviceId();
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/mobile");
         putDataMapReq.getDataMap().putFloat("Steps", fSteps);
         putDataMapReq.getDataMap().putFloat("HBPM", fHBPM);
         putDataMapReq.getDataMap().putLong("Time",SensorTimeStamp);
+        putDataMapReq.getDataMap().putFloat("Calories",fCalories);
+        putDataMapReq.getDataMap().putFloat("Sleep",fSleep);
         if(DeviceId != null)
          putDataMapReq.getDataMap().putString("DeviceId",DeviceId);
         putDataMapReq.setUrgent();

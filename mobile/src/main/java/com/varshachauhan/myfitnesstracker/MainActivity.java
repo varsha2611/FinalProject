@@ -91,14 +91,17 @@ public class MainActivity extends AppCompatActivity
         popup.show();
     }
 
-    private void generateRecentData(final Context myContext) {
+    private void generateRecentData(final Context myContext,String DeviceId) {
         TextView todayDate = (TextView) findViewById(R.id.todayDate);
         TextView curCalories = (TextView) findViewById(R.id.curCalories);
         TextView curSteps = (TextView) findViewById(R.id.curSteps);
         TextView curHBPM = (TextView) findViewById(R.id.curHBPM);
         TextView curDevices = (TextView) findViewById(R.id.curDevices);
         String[] SensorData;
-        SensorData = dataBase.getRecentSensorData(Properties.CurrentDeviceID);
+        if(DeviceId == null)
+          SensorData = dataBase.getRecentSensorData(Properties.CurrentDeviceID);
+        else
+           SensorData =  dataBase.getRecentSensorData(DeviceId);
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
         todayDate.setText(dateFormat.format(new Date()));
 
@@ -271,6 +274,16 @@ public class MainActivity extends AppCompatActivity
                                 changeNickname.show();
                             }
                         });
+                        deviceContext.setNegativeButton("Show Sensor Data", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.i("ShowDeviceData",deviceId);
+                                TextView currentContext = (TextView) findViewById(R.id.currentContext);
+                                currentContext.setText(nickname);
+                                generateRecentData(myContext,deviceId);
+                                ViewFlipper currentWindow = (ViewFlipper) findViewById(R.id.window_context);
+                                currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.homeView)));
+                            }
+                        });
                         deviceContext.create();
                         deviceContext.show();
                     }
@@ -313,7 +326,7 @@ public class MainActivity extends AppCompatActivity
             heartRate = Float.parseFloat(hbpm);
         if(steps != null)
             Steps = Float.parseFloat(steps);
-        generateRecentData(myContext);
+        generateRecentData(myContext,null);
 
         //testing for login stuff
         ImageButton loginButton = (ImageButton) findViewById(R.id.upload);
@@ -367,7 +380,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 currentContext.setText("Recent Stats");
-                generateRecentData(myContext);
+                generateRecentData(myContext,null);
                 currentWindow.setDisplayedChild(currentWindow.indexOfChild(findViewById(R.id.homeView)));
             }
         });

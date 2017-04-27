@@ -69,15 +69,17 @@ public class ListenerService extends WearableListenerService implements DataApi.
                     Float Steps = dataMap.getFloat("Steps");
                     Float HBPM = dataMap.getFloat("HBPM");
                     String DeviceID = dataMap.getString("DeviceId");
+                    Float Calories = dataMap.getFloat("Calories");
+                    Float fSleep = dataMap.getFloat("Sleep");
                     Properties.CurrentDeviceID=DeviceID;
                     Long timestamp = dataMap.getLong("Time");
                     /* Add Values to Database*/
-                    dataBase.InsertSensorDataIntoTable(Steps,HBPM,timestamp,DeviceID);
+                    dataBase.InsertSensorDataIntoTable(Steps,HBPM,Calories,fSleep,timestamp,DeviceID);
                     if(Properties.user != null)
                     {
                         try
                         {
-                            new getData(DeviceID, Steps, HBPM, timestamp, "Upload");
+                            new getData(DeviceID, Steps, HBPM, Calories, fSleep, timestamp, "Upload");
                         }
                         catch(Exception e)
                         {
