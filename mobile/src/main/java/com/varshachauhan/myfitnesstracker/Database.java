@@ -58,37 +58,7 @@ public class Database extends SQLiteOpenHelper{
             } else {
                 Log.i("login", "there's some weird kind of error going on");
             }
-        } else {
-            Log.i("test", "querry is null");
-        }
-        /*Log.i("test", "reached");
-        Cursor c = select(Query);
-        Log.i("test", "querry made");
-        if (c.getCount() <= 0) {
-            c.close();
-            Log.i("login", "something weird went wrong");
-            return false;
-        } else {
-            Log.i("test", Integer.toString(c.getCount()));
-            try {
-                Log.i("test", c.getString(0));
-            } catch (Exception e){
-                Log.i("test", "empty querry maybe?");
-            }
-            Log.i("asdf", c.getColumnName(0));
-            //Log.i("asdf", c.getString(0));
-            if(!c.getString(0).equals("") && !c.getString(1).equals("")){
-                Log.i("test", "couldn't be here");
-                c.close();
-                Log.i("test", "definitely not this");
-                return true;
-            } else {
-                Log.i("test", "another weird crash");
-                c.close();
-                Log.i("test", "no way");
-                return false;
-            }
-        }*/
+        } else { Log.i("test", "querry is null"); }
         return false;
     }
 
@@ -97,21 +67,52 @@ public class Database extends SQLiteOpenHelper{
         db.execSQL("update login set password = \"\" where asdf = '1'");
     }
 
-    /*public void pullUserDevices(){
-        new getData(user, pass);
-        try{
-            JSONArray array = new JSONArray(getData);
-            for(int i = 0; i < array.length(); i++){
-                JSONObject object = array.getJSONObject(i);
-                String watch = object.getString("DeviceId");
-                if(!checkRow("watches", "deviceId", watch)){
-                    db.execSQL("insert into watches (deviceId, nickname) values (" + watch + ", \"Watch #" + watch + "\")");
-                }
+    public String[] getPersonalBest() {
+        /*
+            con.put("hbpm", HeartRate);
+            con.put("steps", StepCount);
+            con.put("calories",Calories);
+            con.put("sleep", fSleep);
+        */
+        Float hbpmM = Float.valueOf(0);
+        Float stepsM = Float.valueOf(0);
+        Float caloriesM = Float.valueOf(0);
+        Float sleepMa = Float.valueOf(0);
+        Float sleepMi = Float.valueOf(0);
+        String Query = "select hbpm, steps, calories, sleep from datagrams";
+        Cursor res = db.rawQuery(Query, null);
+        if (res != null) {
+            if (res.moveToFirst() && res.getCount() > 0) {
+                do {
+                    Float hbpm = res.getFloat(res.getColumnIndex("hbpm"));
+                    Float steps = res.getFloat(res.getColumnIndex("steps"));
+                    Float calories = res.getFloat(res.getColumnIndex("calories"));
+                    Float sleep = res.getFloat(res.getColumnIndex("sleep"));
+
+                    if(hbpm > hbpmM)
+                        hbpmM = hbpm;
+                    if(steps > stepsM)
+                        stepsM = steps;
+                    if(calories > caloriesM)
+                        caloriesM = calories;
+                    if(sleep > sleepMa)
+                        sleepMa = sleep;
+                    if(sleepMi == 0)
+                        sleepMi = sleep;
+                    if(sleep < sleepMi)
+                        sleepMi = sleep;
+
+                } while (res.moveToNext());
             }
-            //create table watches(deleted bool default false, deviceId text not null, nickname text not null, lastsynch timestamp)
-            //create table datagrams(deleted bool default false, watch_id text not null, sent_time timestamp, hbpm integer, steps integer, calories integer, sleep integer)");//, foreign key(WatchId) references Watches(WatchId))
-        } catch (Exception e){}
-    } */
+        }
+        String [] personalRecords = new String [5];
+        personalRecords[0]=Float.toString(hbpmM);
+        personalRecords[1]=Float.toString(stepsM);// + Float.valueOf(100);
+        personalRecords[2]=Float.toString(caloriesM);
+        personalRecords[3]=Float.toString(sleepMa);
+        personalRecords[4]=Float.toString(sleepMi);
+        return personalRecords;
+    }
 
     //check if there is a row with a certain value
     public boolean checkRow(String table, String column, String value){

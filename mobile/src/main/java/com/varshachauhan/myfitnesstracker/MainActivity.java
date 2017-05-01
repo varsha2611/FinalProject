@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -120,34 +123,46 @@ public class MainActivity extends AppCompatActivity
     private void generateAchievementData(final Context myContext) {
         TextView currentDevice = (TextView) findViewById(R.id.achievementTitle);
         currentDevice.setText("Personal Achievements");
+        String [] values = dataBase.getPersonalBest();
+        /*
+        Float hbpmM = Float.valueOf(0);
+        Float stepsM = Float.valueOf(0);
+        Float caloriesM = Float.valueOf(0);
+        Float sleepMa = Float.valueOf(0);
+        Float sleepMi = Float.valueOf(0);
+         */
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
         String currentDate = dateFormat.format(new Date());
 
-        int maxStp = 0;
+        //int maxStp = 0;
         TextView maxSteps = (TextView) findViewById(R.id.maxSteps);
-        maxSteps.setText(Integer.toString(maxStp));
+        //maxSteps.setText(Integer.toString(maxStp));
+        maxSteps.setText(values[1]);
         String maxStpDay = currentDate;
         TextView maxStepsDay = (TextView) findViewById(R.id.maxStepsDay);
         maxStepsDay.setText(maxStpDay);
 
-        int maxCal = 0;
+        //int maxCal = 0;
         TextView maxCalories = (TextView) findViewById(R.id.maxCalories);
-        maxCalories.setText(Integer.toString(maxCal));
+        //maxCalories.setText(Integer.toString(maxCal));
+        maxCalories.setText(values[2]);
         String maxCalDay = currentDate;
         TextView maxCaloriesDay = (TextView) findViewById(R.id.maxCaloriesDay);
         maxCaloriesDay.setText(maxCalDay);
 
-        int maxSlp = 0;
+        //int maxSlp = 0;
         TextView maxSleep = (TextView) findViewById(R.id.maxSleep);
-        maxSleep.setText(Integer.toString(maxSlp));
+        //maxSleep.setText(Integer.toString(maxSlp));
+        maxSleep.setText(values[3]);
         String maxSlpDay = currentDate;
         TextView maxSleepDay = (TextView) findViewById(R.id.maxSleepDay);
         maxSleepDay.setText(maxSlpDay);
 
-        int minSlp = 0;
+        //int minSlp = 0;
         TextView minSleep = (TextView) findViewById(R.id.minSleep);
-        minSleep.setText(Integer.toString(minSlp));
+        //minSleep.setText(Integer.toString(minSlp));
+        minSleep.setText(values[4]);
         String minSlpDay = currentDate;
         TextView minSleepDay = (TextView) findViewById(R.id.minSleepDay);
         minSleepDay.setText(minSlpDay);
@@ -216,8 +231,46 @@ public class MainActivity extends AppCompatActivity
                 deviceButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         final AlertDialog.Builder deviceContext = new AlertDialog.Builder(MainActivity.this);
-                        deviceContext.setTitle(nickname);
-                        final LinearLayout body = new LinearLayout(MainActivity.this);
+
+                        RelativeLayout title = new RelativeLayout(MainActivity.this);
+                        title.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                        TextView name = new TextView(myContext);
+                        name.setText(nickname);
+                        name.setTextSize(30);
+                        name.setTextColor(Color.parseColor("#000000"));
+                        title.addView(name);
+                        Button test = new Button(myContext);
+                        test.setText("Rename");
+                        test.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final AlertDialog.Builder changeNickname = new AlertDialog.Builder(MainActivity.this);
+                                changeNickname.setTitle("Change Device Nickname");
+                                final EditText newName = new EditText(MainActivity.this);
+                                newName.setText(nickname);
+                                changeNickname.setView(newName);
+                                changeNickname.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String newNickname = newName.getText().toString();
+                                        if (!newNickname.trim().equals("")) {
+                                            dataBase.exec("update watches set nickname = \"" + newNickname + "\" where deviceId = \"" + deviceId+"\"");
+                                        } else {
+                                            toast("New nickname is blank");
+                                        }
+                                        generateDeviceTable(myContext);
+                                    }
+                                });
+                                changeNickname.create();
+                                changeNickname.show();
+                            }
+                        });
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams (RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        test.setLayoutParams(lp);
+                        title.addView(test);
+                        deviceContext.setCustomTitle(title);
+
+                        /*final LinearLayout body = new LinearLayout(MainActivity.this);
                         TextView devCalories = new TextView(MainActivity.this);
                         int lcalories = 0;                                                      //Here is where you can set values to be displayed from the device view
                         devCalories.setText(Integer.toString(lcalories));
@@ -230,7 +283,8 @@ public class MainActivity extends AppCompatActivity
                         float lhbpm = 0;
                         devHBPM.setText(Float.toString(lhbpm));
                         body.addView(devHBPM);
-                        deviceContext.setView(body);
+                        deviceContext.setView(body);*/
+
                         deviceContext.setPositiveButton("Delete device", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 final AlertDialog.Builder deleteDevice = new AlertDialog.Builder(MainActivity.this);
@@ -255,7 +309,7 @@ public class MainActivity extends AppCompatActivity
                                 deleteDevice.show();
                             }
                         });
-                        deviceContext.setNeutralButton("Change nickname", new DialogInterface.OnClickListener() {
+                        /*deviceContext.setNeutralButton("Change nickname", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 final AlertDialog.Builder changeNickname = new AlertDialog.Builder(MainActivity.this);
                                 changeNickname.setTitle("Change Device Nickname");
@@ -276,7 +330,7 @@ public class MainActivity extends AppCompatActivity
                                 changeNickname.create();
                                 changeNickname.show();
                             }
-                        });
+                        });*/
                         deviceContext.setNegativeButton("Show Sensor Data", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 TextView currentContext = (TextView) findViewById(R.id.currentContext);
